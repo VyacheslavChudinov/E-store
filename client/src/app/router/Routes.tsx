@@ -16,20 +16,21 @@ export const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "catalog",
-        element: <Catalog />,
+        path: "/catalog/:id",
+        element: <ProductDetails />,
       },
       {
-        path: "contact",
+        path: "/catalog",
+        element: <Catalog />,
+      },
+
+      {
+        path: "/contact",
         element: <ContactPage />,
       },
       {
-        path: "about",
+        path: "/about",
         element: <AboutPage />,
-      },
-      {
-        path: "product/:id",
-        element: <ProductDetails />,
       },
     ],
   },
