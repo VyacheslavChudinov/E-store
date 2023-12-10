@@ -1,13 +1,29 @@
 import axios, { AxiosResponse } from "axios";
+import { toast } from "react-toastify";
 
 axios.defaults.baseURL = "http://localhost:5000/api/";
 
-const getResponseData = (response: AxiosResponse) => response.data;
-
 axios.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(error.response)
+  (error) => {
+    const { data, status } = error.response as AxiosResponse;
+    switch (status) {
+      case 400:
+        toast.error(data.title);
+        break;
+      case 401:
+        toast.error(data.title);
+        break;
+      case 500:
+        toast.error(data.title);
+        break;
+    }
+
+    return Promise.reject(error.response);
+  }
 );
+
+const getResponseData = (response: AxiosResponse) => response;
 
 const requests = {
   get: (url: string) => axios.get(url).then(getResponseData),
