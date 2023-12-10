@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { Product } from "../../app/models/product";
 import agent from "../../app/api/agent";
 import { NotFound } from "../errors/NotFound";
+import Loading from "../../app/layouts/Loading";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +29,7 @@ export default function ProductDetails() {
         .finally(() => setIsLoading(false));
   }, [id]);
 
-  if (isLoading) return <h3>Loading...</h3>;
+  if (isLoading) return <Loading message="Loading Product..." />;
   if (!product) return <NotFound />;
 
   return (
