@@ -1,11 +1,13 @@
-import { createBrowserRouter } from "react-router-dom";
-import HomePage from "../../features/home/HomePage";
+import { Navigate, createBrowserRouter } from "react-router-dom";
+import Home from "../../features/home/Home";
 import ProductDetails from "../../features/catalog/ProductDetails";
-import ContactPage from "../../features/contact/ContactPage";
-import AboutPage from "../../features/about/AboutPage";
+import Contact from "../../features/contact/Contact";
+import About from "../../features/about/About";
 import App from "../layouts/App";
 import Catalog from "../../features/catalog/Catalog";
-import ErrorsPage from "../../features/errors/ErrorsPage";
+import Errors from "../../features/errors/Errors";
+import ServerError from "../../features/errors/ServerError";
+import { NotFound } from "../../features/errors/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -14,7 +16,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <HomePage />,
+        element: <Home />,
       },
       {
         path: "/catalog/:id",
@@ -27,15 +29,27 @@ export const router = createBrowserRouter([
 
       {
         path: "/contact",
-        element: <ContactPage />,
+        element: <Contact />,
       },
       {
         path: "/about",
-        element: <AboutPage />,
+        element: <About />,
       },
       {
         path: "/errors",
-        element: <ErrorsPage />,
+        element: <Errors />,
+      },
+      {
+        path: "/server-error",
+        element: <ServerError />,
+      },
+      {
+        path: "/not-found",
+        element: <NotFound />,
+      },
+      {
+        path: "*",
+        element: <Navigate replace to={"/not-found"} />,
       },
     ],
   },
