@@ -5,6 +5,7 @@ import ContactPage from "../../features/contact/ContactPage";
 import AboutPage from "../../features/about/AboutPage";
 import App from "../layouts/App";
 import Catalog from "../../features/catalog/Catalog";
+import ErrorsPage from "../../features/errors/ErrorsPage";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },
+      {
+        path: "/errors",
+        element: <ErrorsPage />,
       },
     ],
   },
