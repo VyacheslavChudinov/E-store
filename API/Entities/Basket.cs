@@ -8,7 +8,7 @@ namespace API.Entities
 
         public void AddItem(Product product, int quantity)
         {
-            var productInBasket = Items.FirstOrDefault(product => product.ProductId == product.Id);
+            var productInBasket = Items.FirstOrDefault(item => item.ProductId == product.Id);
             if (productInBasket is null)
             {
                 Items.Add(new BasketItem { Product = product, Quantity = quantity });
@@ -22,7 +22,7 @@ namespace API.Entities
 
         public void RemoveItem(int productId, int quantity)
         {
-            var productInBasket = Items.Find(product => productId == product.Id);
+            var productInBasket = Items.FirstOrDefault(item => productId == item.ProductId);
             if (productInBasket is not null)
             {
                 var newQuantity = productInBasket.Quantity - quantity;
