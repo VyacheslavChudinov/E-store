@@ -8,6 +8,7 @@ import Catalog from "../../features/catalog/Catalog";
 import Errors from "../../features/errors/Errors";
 import ServerError from "../../features/errors/ServerError";
 import { NotFound } from "../../features/errors/NotFound";
+import Basket from "../../features/basket/basket";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: "/not-found",
         element: <NotFound />,
+      },
+      {
+        path: "/basket",
+        element: <Basket />,
       },
       {
         path: "*",

@@ -5,6 +5,7 @@ import { router } from "../router/Routes";
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = "http://localhost:5000/api/";
+axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(
   async (response) => {
@@ -48,6 +49,12 @@ const Catalog = {
   getProduct: (id: number) => requests.get(`/products/${id}`),
 };
 
+const Basket = {
+  addItem: (productId: number, quantity: number = 1) =>
+    requests.post(`/basket?productId=${productId}&quantity=${quantity}`, {}),
+  get: () => requests.get("/basket"),
+};
+
 const ApiErrors = {
   get400Error: () => requests.get("errors/bad-request"),
   get401Error: () => requests.get("errors/unathorized"),
@@ -58,6 +65,7 @@ const ApiErrors = {
 
 const agent = {
   Catalog,
+  Basket,
   ApiErrors,
 };
 

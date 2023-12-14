@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./Header.tsx";
 import {
   CssBaseline,
@@ -8,10 +8,15 @@ import {
 } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import "react-toastify/dist/ReactToastify.css";
+import { useStoreContext } from "../context/StoreContext.tsx";
+import { getCookie } from "../utils/cookie.ts";
+import agent from "../api/agent.ts";
+import Loading from "./Loading.tsx";
 
 function App() {
+  const { setBasket } = useStoreContext();
+  const [isLoading, setIsLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const paletteType = darkMode ? "dark" : "light";
   const theme = createTheme({
@@ -22,6 +27,24 @@ function App() {
       },
     },
   });
+
+  useEffect(() => {
+    const buyerId = getCookie("buyerId");
+    if (!buyerId) {
+      setIsLoading(false);
+
+      return;
+    }
+
+    agent.Basket.get()
+      .then((basket) => setBasket(basket))
+      .catch((error) => console.log(error))
+      .finally(() => setIsLoading(false));
+  }, [setBasket]);
+
+  if (isLoading) {
+    return <Loading message="Initializing..."></Loading>;
+  }
 
   return (
     <>
