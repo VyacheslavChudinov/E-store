@@ -1,6 +1,7 @@
 import { Basket } from "../../app/models/basket";
 import {
   Box,
+  Grid,
   Paper,
   Table,
   TableBody,
@@ -15,10 +16,8 @@ import { useStoreContext } from "../../app/context/StoreContext";
 import { useState } from "react";
 import agent from "../../app/api/agent";
 import { LoadingButton } from "@mui/lab";
-
-function formatPrice(price: number) {
-  return `$${(price / 100).toFixed()}`;
-}
+import BasketSummary from "./BasketSummary";
+import { formatPrice } from "../../app/utils/format";
 
 export default function Basket() {
   const { basket, setBasket, removeItem } = useStoreContext();
@@ -50,75 +49,84 @@ export default function Basket() {
     return <Typography variant="h3">Your basket is empty</Typography>;
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="Basket">
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell align="left">Name</TableCell>
-            <TableCell align="left">Brand</TableCell>
-            <TableCell align="left">Type</TableCell>
-            <TableCell align="right">Quantity</TableCell>
-            <TableCell align="right">Price</TableCell>
-            <TableCell align="right">Total</TableCell>
-            <TableCell align="center"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {basket.items.map((item) => (
-            <TableRow
-              key={item.productId}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                <Box
-                  component="img"
-                  sx={{
-                    maxHeight: { xs: 70, md: 100 },
-                  }}
-                  alt="Product image"
-                  src={item.pictureUrl}
-                />
-              </TableCell>
-              <TableCell align="left" component="th" scope="row">
-                {item.name}
-              </TableCell>
-              <TableCell align="left">{item.brand}</TableCell>
-              <TableCell align="left">{item.type}</TableCell>
-              <TableCell align="right">
-                <LoadingButton
-                  loading={loadingProducts[item.productId]}
-                  onClick={() => onRemoveItem(item.productId)}
-                >
-                  <Remove />
-                </LoadingButton>
-
-                {item.quantity}
-
-                <LoadingButton
-                  loading={loadingProducts[item.productId]}
-                  onClick={() => onAddItem(item.productId)}
-                >
-                  <Add />
-                </LoadingButton>
-              </TableCell>
-              <TableCell align="right">{formatPrice(item.price)}</TableCell>
-              <TableCell align="right">
-                {formatPrice(item.price * item.quantity)}
-              </TableCell>
-              <TableCell align="center">
-                <LoadingButton
-                  loading={loadingProducts[item.productId]}
-                  onClick={() => onRemoveItem(item.productId, item.quantity)}
-                  sx={{ color: "red" }}
-                >
-                  <Delete />
-                </LoadingButton>
-              </TableCell>
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="Basket">
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell align="left">Name</TableCell>
+              <TableCell align="left">Brand</TableCell>
+              <TableCell align="left">Type</TableCell>
+              <TableCell align="right">Quantity</TableCell>
+              <TableCell align="right">Price</TableCell>
+              <TableCell align="right">Total</TableCell>
+              <TableCell align="center"></TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {basket.items.map((item) => (
+              <TableRow
+                key={item.productId}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  <Box
+                    component="img"
+                    sx={{
+                      maxHeight: { xs: 70, md: 100 },
+                    }}
+                    alt="Product image"
+                    src={item.pictureUrl}
+                  />
+                </TableCell>
+                <TableCell align="left" component="th" scope="row">
+                  {item.name}
+                </TableCell>
+                <TableCell align="left">{item.brand}</TableCell>
+                <TableCell align="left">{item.type}</TableCell>
+                <TableCell align="right">
+                  <LoadingButton
+                    loading={loadingProducts[item.productId]}
+                    onClick={() => onRemoveItem(item.productId)}
+                  >
+                    <Remove />
+                  </LoadingButton>
+
+                  {item.quantity}
+
+                  <LoadingButton
+                    loading={loadingProducts[item.productId]}
+                    onClick={() => onAddItem(item.productId)}
+                  >
+                    <Add />
+                  </LoadingButton>
+                </TableCell>
+                <TableCell align="right">{formatPrice(item.price)}</TableCell>
+                <TableCell align="right">
+                  {formatPrice(item.price * item.quantity)}
+                </TableCell>
+                <TableCell align="center">
+                  <LoadingButton
+                    loading={loadingProducts[item.productId]}
+                    onClick={() => onRemoveItem(item.productId, item.quantity)}
+                    sx={{ color: "red" }}
+                  >
+                    <Delete />
+                  </LoadingButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Grid container>
+        <Grid item xs={6}></Grid>
+        <Grid item xs={6}>
+          <BasketSummary />
+        </Grid>
+      </Grid>
+    </>
   );
 }

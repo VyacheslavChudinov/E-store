@@ -8,7 +8,7 @@ import Catalog from "../../features/catalog/Catalog";
 import Errors from "../../features/errors/Errors";
 import ServerError from "../../features/errors/ServerError";
 import { NotFound } from "../../features/errors/NotFound";
-import Basket from "../../features/basket/basket";
+import Basket from "../../features/basket/Basket";
 
 export const router = createBrowserRouter([
   {
