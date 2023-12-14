@@ -1,6 +1,7 @@
 import { Basket } from "../../app/models/basket";
 import {
   Box,
+  Button,
   Grid,
   Paper,
   Table,
@@ -18,6 +19,7 @@ import agent from "../../app/api/agent";
 import { LoadingButton } from "@mui/lab";
 import BasketSummary from "./BasketSummary";
 import { formatPrice } from "../../app/utils/format";
+import { Link } from "react-router-dom";
 
 export default function Basket() {
   const { basket, setBasket, removeItem } = useStoreContext();
@@ -125,6 +127,15 @@ export default function Basket() {
         <Grid item xs={6}></Grid>
         <Grid item xs={6}>
           <BasketSummary />
+          <Button
+            component={Link}
+            to="/checkout"
+            variant="contained"
+            size="large"
+            fullWidth
+          >
+            Checkout
+          </Button>
         </Grid>
       </Grid>
     </>
