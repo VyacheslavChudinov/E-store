@@ -52,6 +52,8 @@ const Catalog = {
 const Basket = {
   addItem: (productId: number, quantity: number = 1) =>
     requests.post(`/basket?productId=${productId}&quantity=${quantity}`, {}),
+  remove: (productId: number, quantity: number = 1) =>
+    requests.delete(`/basket?productId=${productId}&quantity=${quantity}`),
   get: () => requests.get("/basket"),
 };
 
