@@ -13,16 +13,19 @@ import {
   Typography,
 } from "@mui/material";
 import { Add, Delete, Remove } from "@mui/icons-material";
-import { useStoreContext } from "../../app/context/StoreContext";
 import { useState } from "react";
 import agent from "../../app/api/agent";
 import { LoadingButton } from "@mui/lab";
 import BasketSummary from "./BasketSummary";
 import { formatPrice } from "../../app/utils/format";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { removeItem, setBasket } from "./basketSlice";
 
 export default function Basket() {
-  const { basket, setBasket, removeItem } = useStoreContext();
+  const dispatch = useAppDispatch();
+
+  const { basket } = useAppSelector((state) => state.basket);
   const [loadingProducts, setLoadingProducts] = useState<{
     [key: number]: boolean;
   }>({});
@@ -30,7 +33,7 @@ export default function Basket() {
   function onAddItem(productId: number, quantity: number = 1) {
     setLoadingProducts((prev) => ({ ...prev, [productId]: true }));
     agent.Basket.addItem(productId, quantity)
-      .then((basket) => setBasket(basket))
+      .then((basket) => dispatch(setBasket(basket)))
       .catch((error) => console.log(error))
       .finally(() =>
         setLoadingProducts((prev) => ({ ...prev, [productId]: false }))
@@ -40,7 +43,7 @@ export default function Basket() {
   function onRemoveItem(productId: number, quantity: number = 1) {
     setLoadingProducts((prev) => ({ ...prev, [productId]: true }));
     agent.Basket.remove(productId, quantity)
-      .then(() => removeItem(productId, quantity))
+      .then(() => dispatch(removeItem({ productId, quantity })))
       .catch((error) => console.log(error))
       .finally(() =>
         setLoadingProducts((prev) => ({ ...prev, [productId]: false }))
