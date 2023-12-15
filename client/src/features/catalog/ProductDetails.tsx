@@ -26,7 +26,7 @@ export default function ProductDetails() {
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const item = basket?.items.find(
     (basketItem) => basketItem.productId === product?.id
   );
