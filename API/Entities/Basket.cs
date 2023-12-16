@@ -23,11 +23,13 @@ namespace API.Entities
         public void RemoveItem(int productId, int quantity)
         {
             var productInBasket = Items.FirstOrDefault(item => productId == item.ProductId);
-            if (productInBasket is not null)
+            if (productInBasket is null)
             {
-                var newQuantity = productInBasket.Quantity - quantity;
-                productInBasket.Quantity = newQuantity >= 0 ? newQuantity : 0;
+                throw new Exception("Product was not found");
             }
+
+            var newQuantity = productInBasket.Quantity - quantity;
+            productInBasket.Quantity = newQuantity >= 0 ? newQuantity : 0;
 
             if (productInBasket.Quantity == 0)
             {

@@ -32,7 +32,7 @@ namespace API.Controllers
             if (basket is null) { basket = CreateBasket(); }
 
             var product = await _context.Products.FirstOrDefaultAsync(product => product.Id == productId);
-            if (product is null) { return NotFound(); }
+            if (product is null) { return BadRequest(new ProblemDetails { Title = "Product doesn't exist" }); }
 
             basket.AddItem(product, quantity);
 
@@ -54,7 +54,14 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            basket.RemoveItem(productId, quantity);
+            try
+            {
+                basket.RemoveItem(productId, quantity);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ProblemDetails { Title = ex.Message });
+            }
 
             var isSaved = await _context.SaveChangesAsync() > 0;
             if (!isSaved)
