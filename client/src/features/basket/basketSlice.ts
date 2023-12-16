@@ -98,4 +98,3 @@ export const basketSlice = createSlice({
 });
 
 export const { setBasket } = basketSlice.actions;
-export default basketSlice.reducer;

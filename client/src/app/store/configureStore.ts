@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import basketReducer from "../../features/basket/basketSlice";
+import { basketSlice } from "../../features/basket/basketSlice";
+import { catalogSlice } from "../../features/catalog/catalogSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
   reducer: {
-    basket: basketReducer,
+    basket: basketSlice.reducer,
+    catalog: catalogSlice.reducer,
   },
 });
 
