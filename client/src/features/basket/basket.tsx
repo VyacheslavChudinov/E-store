@@ -49,9 +49,9 @@ export default function Basket() {
               <TableCell align="left">Name</TableCell>
               <TableCell align="left">Brand</TableCell>
               <TableCell align="left">Type</TableCell>
-              <TableCell align="right">Quantity</TableCell>
+              <TableCell align="center">Quantity</TableCell>
               <TableCell align="right">Price</TableCell>
-              <TableCell align="right">Total</TableCell>
+              <TableCell align="right">Subtotal</TableCell>
               <TableCell align="center"></TableCell>
             </TableRow>
           </TableHead>
@@ -76,7 +76,7 @@ export default function Basket() {
                 </TableCell>
                 <TableCell align="left">{item.brand}</TableCell>
                 <TableCell align="left">{item.type}</TableCell>
-                <TableCell align="right">
+                <TableCell align="center">
                   <LoadingButton
                     loading={
                       !!updatingProducts.find(
