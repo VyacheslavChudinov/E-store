@@ -17,22 +17,27 @@ const initialState: BasketState = {
 export const addBasketItemAsync = createAsyncThunk<
   Basket,
   { productId: number; quantity?: number }
->("basket/addBasketItemAsync", async ({ productId, quantity = 1 }) => {
-  try {
-    return await agent.Basket.addItem(productId, quantity);
-  } catch (error) {
-    console.log(error);
+>(
+  "basket/addBasketItemAsync",
+  async ({ productId, quantity = 1 }, thunkAPI) => {
+    try {
+      return await agent.Basket.addItem(productId, quantity);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.data);
+    }
   }
-});
+);
 
 export const removeBasketItemAsync = createAsyncThunk<
   void,
   { productId: number; quantity: number }
->("basket/removeBasketItemAsync", async ({ productId, quantity }) => {
+>("basket/removeBasketItemAsync", async ({ productId, quantity }, thunkAPI) => {
   try {
     await agent.Basket.remove(productId, quantity);
-  } catch (error) {
-    console.log(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.data);
   }
 });
 
@@ -56,6 +61,7 @@ export const basketSlice = createSlice({
       );
     });
     builder.addCase(addBasketItemAsync.rejected, (state, action) => {
+      console.log(action);
       state.updatingProducts.filter(
         (updatingProductId) => updatingProductId !== action.meta.arg.productId
       );
@@ -90,6 +96,7 @@ export const basketSlice = createSlice({
       );
     });
     builder.addCase(removeBasketItemAsync.rejected, (state, action) => {
+      console.log(action);
       state.updatingProducts.filter(
         (updatingProductId) => updatingProductId !== action.meta.arg.productId
       );
