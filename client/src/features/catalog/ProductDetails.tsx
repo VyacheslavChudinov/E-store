@@ -24,9 +24,9 @@ import { fetchProductAsync, productSelectors } from "./catalogSlice";
 export default function ProductDetails() {
   const { basket, updatingProducts } = useAppSelector((state) => state.basket);
   const { status } = useAppSelector((state) => state.catalog);
-  const { id } = useParams<{ id: string }>();
+  const { id = "" } = useParams<{ id: string }>();
   const product = useAppSelector((state) =>
-    productSelectors.selectById(state, parseInt(id!))
+    productSelectors.selectById(state, parseInt(id))
   );
   const dispatch = useAppDispatch();
   const [quantity, setQuantity] = useState(0);
@@ -65,6 +65,14 @@ export default function ProductDetails() {
       );
     }
   }
+
+  useEffect(() => {
+    if (!item) {
+      return;
+    }
+
+    setQuantity(item.quantity);
+  }, [item]);
 
   useEffect(() => {
     if (!id || !!product) {
