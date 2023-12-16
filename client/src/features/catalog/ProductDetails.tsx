@@ -17,15 +17,17 @@ import { NotFound } from "../errors/NotFound";
 import Loading from "../../app/layouts/Loading";
 import { LoadingButton } from "@mui/lab";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { removeItem, setBasket } from "../basket/basketSlice";
+import {
+  addBasketItemAsync,
+  removeBasketItemAsync,
+} from "../basket/basketSlice";
 
 export default function ProductDetails() {
-  const { basket } = useAppSelector((state) => state.basket);
+  const { basket, updatingProducts } = useAppSelector((state) => state.basket);
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const item = basket?.items.find(
     (basketItem) => basketItem.productId === product?.id
@@ -43,31 +45,23 @@ export default function ProductDetails() {
       return;
     }
 
-    setIsSubmitting(true);
-
     if (!item || quantity > item.quantity) {
       const quantityToAdd = quantity - (item?.quantity ?? 0);
-      agent.Basket.addItem(product?.id, quantityToAdd)
-        .then((basket) => dispatch(setBasket(basket)))
-        .catch((error) => console.log(error))
-        .finally(() => setIsSubmitting(false));
+      dispatch(
+        addBasketItemAsync({ productId: product?.id, quantity: quantityToAdd })
+      );
 
       return;
     }
 
     if (quantity < item.quantity) {
       const quantityToRemove = item.quantity - quantity;
-      agent.Basket.remove(item?.productId, quantityToRemove)
-        .then(() =>
-          dispatch(
-            removeItem({
-              productId: item?.productId,
-              quantity: quantityToRemove,
-            })
-          )
-        )
-        .catch((error) => console.log(error))
-        .finally(() => setIsSubmitting(false));
+      dispatch(
+        removeBasketItemAsync({
+          productId: item?.productId,
+          quantity: quantityToRemove,
+        })
+      );
     }
   }
 
@@ -139,7 +133,11 @@ export default function ProductDetails() {
           </Grid>
           <Grid item xs={6}>
             <LoadingButton
-              loading={isSubmitting}
+              loading={
+                !!updatingProducts.find(
+                  (updatingProductsId) => updatingProductsId === product.id
+                )
+              }
               sx={{ height: "55px" }}
               color="primary"
               size="large"

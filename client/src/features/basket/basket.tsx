@@ -13,41 +13,27 @@ import {
   Typography,
 } from "@mui/material";
 import { Add, Delete, Remove } from "@mui/icons-material";
-import { useState } from "react";
-import agent from "../../app/api/agent";
 import { LoadingButton } from "@mui/lab";
 import BasketSummary from "./BasketSummary";
 import { formatPrice } from "../../app/utils/format";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { removeItem, setBasket } from "./basketSlice";
+import { addBasketItemAsync, removeBasketItemAsync } from "./basketSlice";
 
 export default function Basket() {
   const dispatch = useAppDispatch();
 
   const { basket } = useAppSelector((state) => state.basket);
-  const [loadingProducts, setLoadingProducts] = useState<{
-    [key: number]: boolean;
-  }>({});
 
-  function onAddItem(productId: number, quantity: number = 1) {
-    setLoadingProducts((prev) => ({ ...prev, [productId]: true }));
-    agent.Basket.addItem(productId, quantity)
-      .then((basket) => dispatch(setBasket(basket)))
-      .catch((error) => console.log(error))
-      .finally(() =>
-        setLoadingProducts((prev) => ({ ...prev, [productId]: false }))
-      );
-  }
+  const { updatingProducts } = useAppSelector((state) => state.basket);
 
-  function onRemoveItem(productId: number, quantity: number = 1) {
-    setLoadingProducts((prev) => ({ ...prev, [productId]: true }));
-    agent.Basket.remove(productId, quantity)
-      .then(() => dispatch(removeItem({ productId, quantity })))
-      .catch((error) => console.log(error))
-      .finally(() =>
-        setLoadingProducts((prev) => ({ ...prev, [productId]: false }))
-      );
+  async function onRemove(productId: number, quantity: number = 1) {
+    await dispatch(
+      removeBasketItemAsync({
+        productId,
+        quantity,
+      })
+    );
   }
 
   if (!basket)
@@ -92,8 +78,13 @@ export default function Basket() {
                 <TableCell align="left">{item.type}</TableCell>
                 <TableCell align="right">
                   <LoadingButton
-                    loading={loadingProducts[item.productId]}
-                    onClick={() => onRemoveItem(item.productId)}
+                    loading={
+                      !!updatingProducts.find(
+                        (updatingProductsId) =>
+                          updatingProductsId === item.productId
+                      )
+                    }
+                    onClick={() => onRemove(item.productId)}
                   >
                     <Remove />
                   </LoadingButton>
@@ -101,8 +92,17 @@ export default function Basket() {
                   {item.quantity}
 
                   <LoadingButton
-                    loading={loadingProducts[item.productId]}
-                    onClick={() => onAddItem(item.productId)}
+                    loading={
+                      !!updatingProducts.find(
+                        (updatingProductsId) =>
+                          updatingProductsId === item.productId
+                      )
+                    }
+                    onClick={() =>
+                      dispatch(
+                        addBasketItemAsync({ productId: item.productId })
+                      )
+                    }
                   >
                     <Add />
                   </LoadingButton>
@@ -113,8 +113,13 @@ export default function Basket() {
                 </TableCell>
                 <TableCell align="center">
                   <LoadingButton
-                    loading={loadingProducts[item.productId]}
-                    onClick={() => onRemoveItem(item.productId, item.quantity)}
+                    loading={
+                      !!updatingProducts.find(
+                        (updatingProductsId) =>
+                          updatingProductsId === item.productId
+                      )
+                    }
+                    onClick={() => onRemove(item.productId, item.quantity)}
                     sx={{ color: "red" }}
                   >
                     <Delete />
