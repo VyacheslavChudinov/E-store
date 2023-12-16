@@ -27,8 +27,8 @@ export const addBasketItemAsync = createAsyncThunk<
 
 export const removeBasketItemAsync = createAsyncThunk<
   void,
-  { productId: number; quantity?: number }
->("basket/removeBasketItemAsync", async ({ productId, quantity = 1 }) => {
+  { productId: number; quantity: number }
+>("basket/removeBasketItemAsync", async ({ productId, quantity }) => {
   try {
     await agent.Basket.remove(productId, quantity);
   } catch (error) {
@@ -80,7 +80,7 @@ export const basketSlice = createSlice({
         return;
       }
 
-      state.basket.items[itemIndex].quantity -= quantity!;
+      state.basket.items[itemIndex].quantity -= quantity;
       if (state.basket.items[itemIndex].quantity <= 0) {
         state.basket.items.splice(itemIndex, 1);
       }
