@@ -62,7 +62,7 @@ export const basketSlice = createSlice({
     });
     builder.addCase(addBasketItemAsync.rejected, (state, action) => {
       console.log(action);
-      state.updatingProducts.filter(
+      state.updatingProducts = state.updatingProducts.filter(
         (updatingProductId) => updatingProductId !== action.meta.arg.productId
       );
     });
@@ -97,7 +97,7 @@ export const basketSlice = createSlice({
     });
     builder.addCase(removeBasketItemAsync.rejected, (state, action) => {
       console.log(action);
-      state.updatingProducts.filter(
+      state.updatingProducts = state.updatingProducts.filter(
         (updatingProductId) => updatingProductId !== action.meta.arg.productId
       );
     });
