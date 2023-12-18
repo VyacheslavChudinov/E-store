@@ -28,7 +28,7 @@ namespace API.Controllers
                 .AsQueryable();
             var products = await PagedList<Product>.ToPagedList(query, productParams.PageNumber, productParams.PageSize);
 
-            Response.Headers.Add("Pagination", JsonSerializer.Serialize(products.PaginationDetails));
+            Response.AddPaginationHeader(products.PaginationDetails);
 
             return products;
         }
