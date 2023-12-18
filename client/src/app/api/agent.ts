@@ -48,6 +48,7 @@ const requests = {
 const Catalog = {
   getProducts: () => requests.get("/products"),
   getProduct: (id: number) => requests.get(`/products/${id}`),
+  getProductFilters: () => requests.get(`/products/filters`),
 };
 
 const Basket = {
