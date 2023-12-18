@@ -10,10 +10,14 @@ namespace API.Extensions
 
             return orderBy switch
             {
+                "name" => query.OrderBy(p => p.Name),
+                "nameDesc" => query.OrderByDescending(p => p.Name),
                 "price" => query.OrderBy(p => p.Price),
                 "priceDesc" => query.OrderByDescending(p => p.Price),
                 "brand" => query.OrderByDescending(p => p.Brand),
                 "brandDesc" => query.OrderByDescending(p => p.Brand),
+                "type" => query.OrderByDescending(p => p.Type),
+                "typeDesc" => query.OrderByDescending(p => p.Type),
                 _ => query.OrderBy(p => p.Name),
             };
         }
