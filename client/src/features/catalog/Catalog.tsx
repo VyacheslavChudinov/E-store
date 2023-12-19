@@ -110,7 +110,7 @@ export default function Catalog() {
       </Grid>
       <Grid item xs={3}></Grid>
       <Grid item xs={9}>
-        {!isLoading && paginationDetails && (
+        {!isLoading && !!paginationDetails && !!products.length && (
           <SimplePagination
             onChange={onPaginationChange}
             paginationDetails={paginationDetails}
