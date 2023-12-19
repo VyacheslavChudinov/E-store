@@ -1,4 +1,3 @@
-import Loading from "../../app/layouts/Loading";
 import ProductList from "./ProductList";
 import { useEffect, useState } from "react";
 import {
