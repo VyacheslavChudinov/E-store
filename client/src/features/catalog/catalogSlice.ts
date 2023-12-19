@@ -87,7 +87,7 @@ export const fetchProductAsync = createAsyncThunk<Product, number>(
 );
 
 function initParams() {
-  return { orderBy: "name", pageNumber: 1, pageSize: 9 };
+  return { orderBy: "name", pageNumber: 1, pageSize: 9, brands: [], types: [] };
 }
 
 export const catalogSlice = createSlice({
