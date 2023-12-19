@@ -15,8 +15,8 @@ function SimplePagination({
   const firstItemNumber = (currentPage - 1) * pageSize + 1;
   const lastItemNumber =
     currentPage * pageSize > paginationDetails.totalCount
-      ? currentPage * pageSize
-      : paginationDetails.totalCount;
+      ? paginationDetails.totalCount
+      : currentPage * pageSize;
 
   return (
     <Box
