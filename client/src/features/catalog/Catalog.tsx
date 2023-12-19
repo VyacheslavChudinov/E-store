@@ -48,11 +48,11 @@ export default function Catalog() {
   }
 
   function onBrandChange(selectedBrands: string[]) {
-    dispatch(setProductParams({ brands: selectedBrands }));
+    dispatch(setProductParams({ brands: selectedBrands, pageNumber: 1 }));
   }
 
   function onTypeChange(selectedTypes: string[]) {
-    dispatch(setProductParams({ types: selectedTypes }));
+    dispatch(setProductParams({ types: selectedTypes, pageNumber: 1 }));
   }
 
   useEffect(() => {

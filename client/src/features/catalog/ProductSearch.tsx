@@ -9,7 +9,7 @@ function ProductSearch() {
   const [searchTerm, setSearchTerm] = useState(productParams.searchTerm);
 
   const debouncedSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setProductParams({ searchTerm: e.target.value }));
+    dispatch(setProductParams({ searchTerm: e.target.value, pageNumber: 1 }));
   }, 1000);
 
   return (
