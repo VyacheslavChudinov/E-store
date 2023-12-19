@@ -16,15 +16,15 @@ function getAxiosParams(productParams: ProductParams) {
   params.append("pageSize", productParams.pageSize.toString());
   params.append("orderBy", productParams.orderBy.toString());
 
-  if (productParams.brands) {
+  if (productParams.brands?.length) {
     params.append("brands", productParams.brands.toString());
   }
 
-  if (productParams.types) {
+  if (productParams.types?.length) {
     params.append("types", productParams.types.toString());
   }
 
-  if (productParams.searchTerm) {
+  if (productParams.searchTerm?.length) {
     params.append("searchTerm", productParams.searchTerm.toString());
   }
 
