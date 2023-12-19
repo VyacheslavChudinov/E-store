@@ -26,17 +26,10 @@ export default function Catalog() {
   const products = useAppSelector(productSelectors.selectAll);
   const { paginationDetails } = useAppSelector((state) => state.catalog);
   const dispatch = useAppDispatch();
-  const {
-    productsLoaded,
-    filtersLoaded,
-    brands,
-    types,
-    status,
-    productParams,
-  } = useAppSelector((state) => state.catalog);
+  const { productsLoaded, filtersLoaded, brands, types, productParams } =
+    useAppSelector((state) => state.catalog);
 
   const [selectedValue, setSelectedValue] = useState(productParams.orderBy);
-  const isLoading = status.includes("pending");
 
   function onPaginationChange(pageNumber: number) {
     dispatch(setProductParams({ pageNumber }));
@@ -67,10 +60,6 @@ export default function Catalog() {
     }
   }, [dispatch, filtersLoaded]);
 
-  if (isLoading) {
-    return <Loading message="Loading Products..." />;
-  }
-
   return (
     <Grid container spacing={4} sx={{ mb: 2 }}>
       <Grid item xs={3}>
@@ -86,7 +75,7 @@ export default function Catalog() {
           />
         </Paper>
 
-        {!isLoading && (
+        {filtersLoaded && (
           <Paper sx={{ mb: 2, p: 2 }}>
             <CheckboxGroup
               items={brands}
@@ -95,7 +84,7 @@ export default function Catalog() {
             />
           </Paper>
         )}
-        {!isLoading && (
+        {filtersLoaded && (
           <Paper sx={{ mb: 2, p: 2 }}>
             <CheckboxGroup
               items={types}
@@ -110,7 +99,7 @@ export default function Catalog() {
       </Grid>
       <Grid item xs={3}></Grid>
       <Grid item xs={9}>
-        {!isLoading && !!paginationDetails && !!products.length && (
+        {!!paginationDetails && !!products.length && (
           <SimplePagination
             onChange={onPaginationChange}
             paginationDetails={paginationDetails}
