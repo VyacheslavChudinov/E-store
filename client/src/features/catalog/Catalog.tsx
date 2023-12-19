@@ -1,27 +1,26 @@
 import Loading from "../../app/layouts/Loading";
 import ProductList from "./ProductList";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   fetchFilters,
   fetchProductsAsync,
   productSelectors,
+  setProductParams,
 } from "./catalogSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 
 import {
   Box,
   Checkbox,
-  FormControl,
   FormControlLabel,
   FormGroup,
   Grid,
   Pagination,
   Paper,
-  Radio,
-  RadioGroup,
   Typography,
 } from "@mui/material";
 import ProductSearch from "./ProductSearch";
+import RadioButtonGroup from "../../app/components/RadioButtonGroup";
 
 const sortOptions = [
   { value: "name", label: "Alphabetical - A-Z" },
@@ -33,8 +32,21 @@ const sortOptions = [
 export default function Catalog() {
   const products = useAppSelector(productSelectors.selectAll);
   const dispatch = useAppDispatch();
-  const { productsLoaded, filtersLoaded, brands, types, status } =
-    useAppSelector((state) => state.catalog);
+  const {
+    productsLoaded,
+    filtersLoaded,
+    brands,
+    types,
+    status,
+    productParams,
+  } = useAppSelector((state) => state.catalog);
+
+  const [selectedValue, setSelectedValue] = useState(productParams.orderBy);
+
+  function onSortChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setSelectedValue(event.target.value);
+    dispatch(setProductParams({ orderBy: event.target.value }));
+  }
 
   const isLoading = status.includes("pending");
 
@@ -62,18 +74,11 @@ export default function Catalog() {
         </Paper>
 
         <Paper sx={{ mb: 2, p: 2 }}>
-          <FormControl>
-            <RadioGroup>
-              {sortOptions.map((sortOption) => (
-                <FormControlLabel
-                  value={sortOption.value}
-                  control={<Radio />}
-                  label={sortOption.label}
-                  key={sortOption.value}
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
+          <RadioButtonGroup
+            sortOptions={sortOptions}
+            selectedValue={selectedValue}
+            onChange={onSortChange}
+          />
         </Paper>
 
         {!isLoading && (
