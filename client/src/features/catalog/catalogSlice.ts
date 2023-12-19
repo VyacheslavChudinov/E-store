@@ -6,6 +6,7 @@ import {
 import { Product, ProductParams } from "../../app/models/product";
 import agent from "../../app/api/agent";
 import { RootState } from "../../app/store/configureStore";
+import { PaginationDetails } from "../../app/models/pagination";
 
 const productsAdapter = createEntityAdapter<Product>();
 
@@ -37,6 +38,7 @@ interface CatalogState {
   types: string[];
   status: string;
   productParams: ProductParams;
+  paginationDetails: PaginationDetails | null;
 }
 
 export const fetchFilters = createAsyncThunk<{
@@ -58,10 +60,14 @@ export const fetchProductsAsync = createAsyncThunk<
   { state: RootState }
 >("products/getProductsAsync", async (_, thunkAPI) => {
   try {
-    const state = thunkAPI.getState();
-    return await agent.Catalog.getProducts(
-      getAxiosParams(state.catalog.productParams)
+    const params = getAxiosParams(thunkAPI.getState().catalog.productParams);
+    const { items, paginationDetails } = await agent.Catalog.getProducts(
+      params
     );
+
+    thunkAPI.dispatch(setPaginationDetails(paginationDetails));
+
+    return items;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     thunkAPI.rejectWithValue(error.data);
@@ -93,11 +99,18 @@ export const catalogSlice = createSlice({
     types: [] as string[],
     status: "idle",
     productParams: initParams(),
+    paginationDetails: null,
   }),
   reducers: {
     setProductParams: (state, action) => {
       state.productsLoaded = false;
       state.productParams = { ...state.productParams, ...action.payload };
+    },
+    setPaginationDetails: (state, action) => {
+      state.paginationDetails = {
+        ...state.paginationDetails,
+        ...action.payload,
+      };
     },
     resetProductParams: (state) => {
       state.productParams = initParams();
@@ -152,4 +165,5 @@ export const productSelectors = productsAdapter.getSelectors(
   (state: RootState) => state.catalog
 );
 
-export const { setProductParams, resetProductParams } = catalogSlice.actions;
+export const { setProductParams, resetProductParams, setPaginationDetails } =
+  catalogSlice.actions;

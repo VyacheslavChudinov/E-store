@@ -9,10 +9,11 @@ import {
 } from "./catalogSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 
-import { Box, Grid, Pagination, Paper, Typography } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import ProductSearch from "./ProductSearch";
 import RadioButtonGroup from "../../app/components/RadioButtonGroup";
 import CheckboxGroup from "../../app/components/CheckboxGroup";
+import SimplePagination from "../../app/components/SimplePagination";
 
 const sortOptions = [
   { value: "name", label: "Alphabetical - A-Z" },
@@ -23,6 +24,7 @@ const sortOptions = [
 
 export default function Catalog() {
   const products = useAppSelector(productSelectors.selectAll);
+  const { paginationDetails } = useAppSelector((state) => state.catalog);
   const dispatch = useAppDispatch();
   const {
     productsLoaded,
@@ -35,6 +37,10 @@ export default function Catalog() {
 
   const [selectedValue, setSelectedValue] = useState(productParams.orderBy);
   const isLoading = status.includes("pending");
+
+  function onPaginationChange(pageNumber: number) {
+    dispatch(setProductParams({ pageNumber }));
+  }
 
   function onSortChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSelectedValue(event.target.value);
@@ -104,15 +110,11 @@ export default function Catalog() {
       </Grid>
       <Grid item xs={3}></Grid>
       <Grid item xs={9}>
-        {!isLoading && (
-          <Box
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Typography>Displaying 1-10 of 100 products</Typography>
-            <Pagination count={10} color="secondary" size="large" />
-          </Box>
+        {!isLoading && paginationDetails && (
+          <SimplePagination
+            onChange={onPaginationChange}
+            paginationDetails={paginationDetails}
+          />
         )}
       </Grid>
     </Grid>
