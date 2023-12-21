@@ -8,17 +8,17 @@ namespace API.Data
     {
         public static async Task InitializeAsync(StoreContext context, UserManager<User> userManager)
         {
-            if (!context.Users.Any())
+            if (!userManager.Users.Any())
             {
-                var user = new User { UserName = "Tom", Email = "tom-email.email.com" };
-                var userCreate = await userManager.CreateAsync(user, "TomPassword!1");
+                var user = new User { UserName = "Tom", Email = "tom-email@email.com" };
+                var userCreate = await userManager.CreateAsync(user, "StrongPa$$word!1");
                 if (userCreate.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, "MEMBER");
+                    await userManager.AddToRoleAsync(user, "Member");
                 }
 
-                var adminUser = new User { UserName = "Jerry", Email = "jerry-email.email.com" };
-                var adminUserCreate = await userManager.CreateAsync(adminUser, "JerryPassword!1");
+                var adminUser = new User { UserName = "Jerry", Email = "jerry-email@email.com" };
+                var adminUserCreate = await userManager.CreateAsync(adminUser, "StrongPa$$word!1");
                 if (adminUserCreate.Succeeded)
                 {
                     await userManager.AddToRolesAsync(adminUser, new[] { "Admin", "Member" });
