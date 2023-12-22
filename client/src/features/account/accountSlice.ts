@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { User } from "../../app/models/user";
 import agent, { LoginPayload } from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
+import { toast } from "react-toastify";
 
 export interface AccountState {
   user: User | null;
@@ -23,7 +24,7 @@ export const login = createAsyncThunk<User, LoginPayload>(
       return user;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      thunkAPI.rejectWithValue({ error: error.data });
+      return thunkAPI.rejectWithValue({ error: error.data });
     }
   }
 );
@@ -31,6 +32,9 @@ export const login = createAsyncThunk<User, LoginPayload>(
 export const fetchCurrentUser = createAsyncThunk<User>(
   "account/fetchCurrentUser",
   async (_, thunkAPI) => {
+    const userStorage = JSON.parse(localStorage.getItem("user")!);
+    thunkAPI.dispatch(setUser(userStorage));
+
     try {
       const user = await agent.Account.currentUser();
       localStorage.setItem("user", JSON.stringify(user));
@@ -38,8 +42,11 @@ export const fetchCurrentUser = createAsyncThunk<User>(
       return user;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      thunkAPI.rejectWithValue({ error: error.data });
+      return thunkAPI.rejectWithValue({ error: error.data });
     }
+  },
+  {
+    condition: () => !!localStorage.getItem("user"),
   }
 );
 
@@ -47,6 +54,9 @@ export const accountSlice = createSlice({
   name: "User",
   initialState,
   reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
     logout: (state) => {
       state.user = null;
       localStorage.removeItem("user");
@@ -54,6 +64,17 @@ export const accountSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchCurrentUser.rejected, (state) => {
+      state.user = null;
+      localStorage.removeItem("user");
+      toast.error("Session expired - please login again");
+      router.navigate("/");
+    });
+
+    builder.addCase(login.rejected, (_, action) => {
+      console.log(action.payload);
+    });
+
     builder.addMatcher(
       isAnyOf(login.fulfilled, fetchCurrentUser.fulfilled),
       (state, action) => {
@@ -61,13 +82,7 @@ export const accountSlice = createSlice({
         state.status = "idle";
       }
     );
-    builder.addMatcher(
-      isAnyOf(login.rejected, fetchCurrentUser.rejected),
-      (_, action) => {
-        console.log(action.payload);
-      }
-    );
   },
 });
 
-export const { logout } = accountSlice.actions;
+export const { logout, setUser } = accountSlice.actions;

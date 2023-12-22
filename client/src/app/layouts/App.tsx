@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Header from "./Header.tsx";
 import {
   CssBaseline,
@@ -9,11 +9,10 @@ import {
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getCookie } from "../utils/cookie.ts";
-import agent from "../api/agent.ts";
 import Loading from "./Loading.tsx";
 import { useAppDispatch } from "../store/configureStore.ts";
-import { setBasket } from "../../features/basket/basketSlice.ts";
+import { fetchCurrentBasket } from "../../features/basket/basketSlice.ts";
+import { fetchCurrentUser } from "../../features/account/accountSlice.ts";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -29,19 +28,18 @@ function App() {
     },
   });
 
-  useEffect(() => {
-    const buyerId = getCookie("buyerId");
-    if (!buyerId) {
-      setIsLoading(false);
-
-      return;
+  const initApp = useCallback(async () => {
+    try {
+      await dispatch(fetchCurrentUser());
+      await dispatch(fetchCurrentBasket());
+    } catch (error) {
+      console.log(error);
     }
-
-    agent.Basket.get()
-      .then((basket) => dispatch(setBasket(basket)))
-      .catch((error) => console.log(error))
-      .finally(() => setIsLoading(false));
   }, [dispatch]);
+
+  useEffect(() => {
+    initApp().then(() => setIsLoading(false));
+  }, [initApp]);
 
   if (isLoading) {
     return <Loading message="Initializing..."></Loading>;
