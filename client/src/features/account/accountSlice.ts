@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { User } from "../../app/models/user";
 import agent, { LoginPayload } from "../../app/api/agent";
+import { router } from "../../app/router/Routes";
 
 export interface AccountState {
-  user: User;
+  user: User | null;
   status: string;
 }
 
@@ -49,8 +50,10 @@ export const accountSlice = createSlice({
   name: "User",
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
+    logout: (state) => {
+      state.user = null;
+      localStorage.removeItem("user");
+      router.navigate("/");
     },
   },
   extraReducers: (builder) => {
@@ -70,4 +73,4 @@ export const accountSlice = createSlice({
   },
 });
 
-export const { setUser } = accountSlice.actions;
+export const { logout } = accountSlice.actions;
