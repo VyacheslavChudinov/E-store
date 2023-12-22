@@ -10,6 +10,8 @@ import ServerError from "../../features/errors/ServerError";
 import { NotFound } from "../../features/errors/NotFound";
 import Basket from "../../features/basket/Basket";
 import Checkout from "../../features/checkout/Checkout";
+import Login from "../../features/account/Login";
+import Register from "../../features/account/Register";
 
 export const router = createBrowserRouter([
   {
@@ -56,6 +58,14 @@ export const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <Checkout />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
       },
       {
         path: "*",
