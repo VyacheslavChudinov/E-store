@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
 import { useAppSelector } from "../store/configureStore";
+import AccountMenu from "./AccountMenu";
 
 interface Props {
   darkMode: boolean;
@@ -40,6 +41,7 @@ const navLinksStyle = {
 
 export default function Header({ darkMode, setDarkMode }: Props) {
   const { basket } = useAppSelector((state) => state.basket);
+  const { user } = useAppSelector((state) => state.account);
   const itemsCount = basket?.items.reduce(
     (sum, item) => sum + item.quantity,
     0
@@ -91,18 +93,21 @@ export default function Header({ darkMode, setDarkMode }: Props) {
             </Badge>
           </IconButton>
 
-          <List sx={{ display: "flex" }}>
-            {userLinks.map(({ title, path }) => (
-              <ListItem
-                key={path}
-                component={NavLink}
-                to={path}
-                sx={navLinksStyle}
-              >
-                <Typography>{title.toUpperCase()}</Typography>
-              </ListItem>
-            ))}
-          </List>
+          {!user && (
+            <List sx={{ display: "flex" }}>
+              {userLinks.map(({ title, path }) => (
+                <ListItem
+                  key={path}
+                  component={NavLink}
+                  to={path}
+                  sx={navLinksStyle}
+                >
+                  <Typography>{title.toUpperCase()}</Typography>
+                </ListItem>
+              ))}
+            </List>
+          )}
+          {!!user && <AccountMenu />}
         </Box>
       </Toolbar>
     </AppBar>
