@@ -3,6 +3,16 @@ import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
 
+export interface LoginPayload {
+  username: string;
+  password: string;
+}
+export interface RegisterPayload {
+  username: string;
+  password: string;
+  email: string;
+}
+
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = "http://localhost:5000/api/";
@@ -34,9 +44,6 @@ axios.interceptors.response.use(
         break;
       case 401:
         toast.error(data.title);
-        break;
-      case 404:
-        router.navigate("/not-found");
         break;
       case 500:
         router.navigate("/server-error", { state: { error: data } });
@@ -81,10 +88,18 @@ const ApiErrors = {
   getValidationError: () => requests.get("errors/validation-error"),
 };
 
+const Account = {
+  login: (userInfo: LoginPayload) => requests.post("/account/login", userInfo),
+  register: (userInfo: RegisterPayload) =>
+    requests.post("/account/register", userInfo),
+  currentUser: () => requests.get("/account/currentUser"),
+};
+
 const agent = {
   Catalog,
   Basket,
   ApiErrors,
+  Account,
 };
 
 export default agent;
