@@ -50,7 +50,7 @@ export const fetchFilters = createAsyncThunk<{
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    thunkAPI.rejectWithValue({ error: error.data });
+    return thunkAPI.rejectWithValue({ error: error.data });
   }
 });
 
@@ -70,7 +70,7 @@ export const fetchProductsAsync = createAsyncThunk<
     return items;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    thunkAPI.rejectWithValue(error.data);
+    return thunkAPI.rejectWithValue(error.data);
   }
 });
 
