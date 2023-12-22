@@ -9,10 +9,7 @@ export interface AccountState {
 }
 
 const initialState: AccountState = {
-  user: {
-    email: "",
-    token: "",
-  },
+  user: null,
   status: "idle",
 };
 
