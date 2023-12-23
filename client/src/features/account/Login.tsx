@@ -65,7 +65,7 @@ export default function Login() {
             label="User Name"
             autoFocus
             autoComplete="given-name"
-            {...register("username", { required: "Username is required" })}
+            {...register("username", { required: "User name is required" })}
             error={!!errors.username}
             helperText={errors?.username?.message as string}
           />
