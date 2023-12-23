@@ -2,6 +2,7 @@ import { Button, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/configureStore";
 import { logout } from "../../features/account/accountSlice";
+import { clearBasket } from "../../features/basket/basketSlice";
 
 function AccountMenu() {
   const { user } = useAppSelector((state) => state.account);
@@ -24,7 +25,14 @@ function AccountMenu() {
       </Button>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         {!!user && (
-          <MenuItem onClick={() => dispatch(logout())}>Logout</MenuItem>
+          <MenuItem
+            onClick={() => {
+              dispatch(clearBasket());
+              dispatch(logout());
+            }}
+          >
+            Logout
+          </MenuItem>
         )}
       </Menu>
     </>

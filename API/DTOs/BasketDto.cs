@@ -6,6 +6,4 @@ namespace API.DTOs
         public string BuyerId { get; set; }
         public List<BasketItemDto> Items { get; set; }
     }
-
-
 }

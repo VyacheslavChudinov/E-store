@@ -3,6 +3,7 @@ import { User } from "../../app/models/user";
 import agent, { LoginPayload } from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
+import { setBasket } from "../basket/basketSlice";
 
 export interface AccountState {
   user: User | null;
@@ -18,7 +19,10 @@ export const login = createAsyncThunk<User, LoginPayload>(
   "account/login",
   async (loginPayload, thunkAPI) => {
     try {
-      const user = await agent.Account.login(loginPayload);
+      const { basket, ...user } = await agent.Account.login(loginPayload);
+      if (basket) {
+        thunkAPI.dispatch(setBasket(basket));
+      }
       localStorage.setItem("user", JSON.stringify(user));
 
       return user;
@@ -36,7 +40,10 @@ export const fetchCurrentUser = createAsyncThunk<User>(
     thunkAPI.dispatch(setUser(userStorage));
 
     try {
-      const user = await agent.Account.currentUser();
+      const { basket, ...user } = await agent.Account.currentUser();
+      if (basket) {
+        thunkAPI.dispatch(setBasket(basket));
+      }
       localStorage.setItem("user", JSON.stringify(user));
 
       return user;
