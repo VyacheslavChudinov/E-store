@@ -79,7 +79,7 @@ export const accountSlice = createSlice({
     });
 
     builder.addCase(login.rejected, (_, action) => {
-      console.log(action.payload);
+      throw action.payload;
     });
 
     builder.addMatcher(
