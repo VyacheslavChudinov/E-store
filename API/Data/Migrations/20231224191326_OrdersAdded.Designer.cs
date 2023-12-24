@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20231224125818_OrderEntityAdded")]
-    partial class OrderEntityAdded
+    [Migration("20231224191326_OrdersAdded")]
+    partial class OrdersAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -439,7 +439,7 @@ namespace API.Data.Migrations
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId");
 
-                    b.OwnsOne("API.Entities.OrderAggregator.ProductItemOrdered", "OrderedItem", b1 =>
+                    b.OwnsOne("API.Entities.OrderAggregator.OrderedItemSnapshot", "OrderedItemSnapshot", b1 =>
                         {
                             b1.Property<int>("OrderItemId")
                                 .HasColumnType("INTEGER");
@@ -461,7 +461,7 @@ namespace API.Data.Migrations
                                 .HasForeignKey("OrderItemId");
                         });
 
-                    b.Navigation("OrderedItem");
+                    b.Navigation("OrderedItemSnapshot");
                 });
 
             modelBuilder.Entity("API.Entities.UserAddress", b =>

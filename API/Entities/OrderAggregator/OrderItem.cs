@@ -6,6 +6,6 @@ namespace API.Entities.OrderAggregator
         public long Price { get; set; }
         public int Quantity { get; set; }
 
-        public ProductItemOrdered OrderedItem { get; set; }
+        public OrderedItemSnapshot OrderedItemSnapshot { get; set; }
     }
 }

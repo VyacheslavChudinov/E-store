@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class OrderEntityAdded : Migration
+    public partial class OrdersAdded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -248,9 +248,9 @@ namespace API.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Price = table.Column<long>(type: "INTEGER", nullable: false),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    OrderedItem_ProductId = table.Column<int>(type: "INTEGER", nullable: true),
-                    OrderedItem_Name = table.Column<string>(type: "TEXT", nullable: true),
-                    OrderedItem_PictureUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    OrderedItemSnapshot_ProductId = table.Column<int>(type: "INTEGER", nullable: true),
+                    OrderedItemSnapshot_Name = table.Column<string>(type: "TEXT", nullable: true),
+                    OrderedItemSnapshot_PictureUrl = table.Column<string>(type: "TEXT", nullable: true),
                     OrderId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
