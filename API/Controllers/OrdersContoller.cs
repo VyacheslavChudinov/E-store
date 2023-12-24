@@ -2,6 +2,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Entities.OrderAggregator;
+using API.Extensions;
 using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,19 +23,22 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Order>>> GetOrders()
+        public async Task<ActionResult<List<OrderDto>>> GetOrders()
         {
             return await _context.Orders
                 .Where(o => o.BuyerId == User.Identity.Name)
-                .Include(i => i.OrderItems)
+                .MapToOrderDto()
                 .ToListAsync();
         }
 
 
         [HttpGet("{id}", Name = "GetOrder")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<OrderDto>> GetOrder(int id)
         {
-            return await _context.Orders.FirstOrDefaultAsync(o => o.BuyerId == User.Identity.Name && o.Id == id);
+            return await _context.Orders
+                .Where(o => o.BuyerId == User.Identity.Name && o.Id == id)
+                .MapToOrderDto()
+                .FirstOrDefaultAsync();
         }
 
         [HttpPost()]
