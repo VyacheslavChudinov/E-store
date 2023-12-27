@@ -1,12 +1,10 @@
-import {
-  Typography,
-  Grid,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { Typography, Grid, FormControlLabel, Checkbox } from "@mui/material";
+import { useFormContext } from "react-hook-form";
+import StoreFormInput from "../../app/components/StoreFormInput";
 
 export default function PaymentForm() {
+  const { control } = useFormContext();
+
   return (
     <>
       <Typography variant="h6" gutterBottom>
@@ -14,44 +12,31 @@ export default function PaymentForm() {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <TextField
-            required
-            id="cardName"
+          <StoreFormInput
             label="Name on card"
-            fullWidth
-            autoComplete="cc-name"
-            variant="standard"
+            name="cardName"
+            control={control}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            required
-            id="cardNumber"
+          <StoreFormInput
             label="Card number"
-            fullWidth
-            autoComplete="cc-number"
-            variant="standard"
+            name="cardNumber"
+            control={control}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            required
-            id="expDate"
+          <StoreFormInput
             label="Expiry date"
-            fullWidth
-            autoComplete="cc-exp"
-            variant="standard"
+            name="expDate"
+            control={control}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            required
-            id="cvv"
-            label="CVV"
-            helperText="Last three digits on signature strip"
-            fullWidth
-            autoComplete="cc-csc"
-            variant="standard"
+          <StoreFormInput
+            label="Last three digits on signature strip"
+            name="cvv"
+            control={control}
           />
         </Grid>
         <Grid item xs={12}>
