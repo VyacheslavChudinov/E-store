@@ -8,6 +8,7 @@ interface StoreFormInputProps extends UseControllerProps {
 export default function StoreFormInput(props: StoreFormInputProps) {
   const { field, fieldState } = useController({
     ...props,
+    defaultValue: "",
   });
 
   return (
