@@ -1,6 +1,7 @@
-import { Typography, Grid, FormControlLabel, Checkbox } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 import StoreFormInput from "../../app/components/StoreFormInput";
 import { useFormContext } from "react-hook-form";
+import StoreFormCheckbox from "../../app/components/StoreFormCheckbox";
 
 export default function AddressForm() {
   const { control } = useFormContext();
@@ -46,10 +47,9 @@ export default function AddressForm() {
           <StoreFormInput control={control} name="country" label="Country" />
         </Grid>
         <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Checkbox color="secondary" name="saveAddress" value="yes" />
-            }
+          <StoreFormCheckbox
+            control={control}
+            name="saveAddress"
             label="Use this address for payment details"
           />
         </Grid>
