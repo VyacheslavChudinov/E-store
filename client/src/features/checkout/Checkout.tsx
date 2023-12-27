@@ -14,6 +14,11 @@ import Review from "./Review";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchema } from "./CheckoutValidation";
+import agent from "../../app/api/agent";
+import { ShippingAddress } from "../../app/models/order";
+import { useAppDispatch } from "../../app/store/configureStore";
+import { clearBasket } from "../basket/basketSlice";
+import { LoadingButton } from "@mui/lab";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
@@ -33,17 +38,37 @@ function getStepContent(step: number) {
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
   const currentValidationSchema = validationSchema[activeStep];
+  const [orderNumber, setOrderNumber] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const methods = useForm({
     mode: "onTouched",
     resolver: yupResolver(currentValidationSchema),
   });
 
-  const handleNext = (data: FieldValues) => {
+  const handleNext = async (data: FieldValues) => {
+    const { cardName, saveAddress, ...shippingAddress } = data;
+
     if (activeStep == 2) {
-      console.log(data);
+      setIsLoading(true);
+
+      try {
+        const createOderdId = await agent.Orders.createOrder({
+          saveAddress,
+          shippingAddress: shippingAddress as ShippingAddress,
+        });
+        setOrderNumber(createOderdId);
+        setActiveStep((prev) => prev + 1);
+        dispatch(clearBasket());
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setActiveStep(activeStep + 1);
     }
-    setActiveStep(activeStep + 1);
   };
 
   const handleBack = () => {
@@ -73,7 +98,7 @@ export default function CheckoutPage() {
                 Thank you for your order.
               </Typography>
               <Typography variant="subtitle1">
-                Your order number is #2001539. We have emailed your order
+                Your order number is {orderNumber}. We have emailed your order
                 confirmation, and will send you an update when your order has
                 shipped.
               </Typography>
@@ -87,14 +112,15 @@ export default function CheckoutPage() {
                     Back
                   </Button>
                 )}
-                <Button
+                <LoadingButton
+                  loading={isLoading}
                   disabled={!methods.formState.isValid}
                   variant="contained"
                   type="submit"
                   sx={{ mt: 3, ml: 1 }}
                 >
                   {activeStep === steps.length - 1 ? "Place order" : "Next"}
-                </Button>
+                </LoadingButton>
               </Box>
             </form>
           )}

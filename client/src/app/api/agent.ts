@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
 import { store } from "../store/configureStore";
+import { Order } from "../models/order";
 
 export interface LoginPayload {
   username: string;
@@ -90,6 +91,12 @@ const Basket = {
   get: () => requests.get("/basket"),
 };
 
+const Orders = {
+  getOrders: () => requests.get("orders"),
+  getOrder: (id: number) => requests.get(`orders/${id}`),
+  createOrder: (order: Order) => requests.post(`orders`, order),
+};
+
 const ApiErrors = {
   get400Error: () => requests.get("errors/bad-request"),
   get401Error: () => requests.get("errors/unathorized"),
@@ -110,6 +117,7 @@ const agent = {
   Basket,
   ApiErrors,
   Account,
+  Orders,
 };
 
 export default agent;
