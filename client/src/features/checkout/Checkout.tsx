@@ -11,7 +11,7 @@ import { useState } from "react";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
-import { FormProvider, useForm } from "react-hook-form";
+import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchema } from "./CheckoutValidation";
 
@@ -32,12 +32,17 @@ function getStepContent(step: number) {
 
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
+  const currentValidationSchema = validationSchema[activeStep];
+
   const methods = useForm({
     mode: "onTouched",
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(currentValidationSchema),
   });
 
-  const handleNext = () => {
+  const handleNext = (data: FieldValues) => {
+    if (activeStep == 2) {
+      console.log(data);
+    }
     setActiveStep(activeStep + 1);
   };
 
