@@ -14,7 +14,7 @@ export default function AddressForm() {
 
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <StoreFormInput control={control} name="firstName" label="Name" />
+          <StoreFormInput control={control} name="name" label="Name" />
         </Grid>
         <Grid item xs={12}>
           <StoreFormInput

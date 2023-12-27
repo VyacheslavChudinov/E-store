@@ -18,7 +18,7 @@ export default function StoreFormInput(props: StoreFormInputProps) {
       fullWidth
       variant="outlined"
       error={!!fieldState.error}
-      helperText={!!fieldState.error?.message}
+      helperText={fieldState.error?.message}
     />
   );
 }
