@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class OrdersContoller : BaseApiController
+    public class OrdersController : BaseApiController
     {
         private StoreContext _context;
         private BasketService _basketService;
         private UserManager<User> _userManager;
-        public OrdersContoller(StoreContext context, BasketService basketService, UserManager<User> userManager)
+        public OrdersController(StoreContext context, BasketService basketService, UserManager<User> userManager)
         {
             _context = context;
             _basketService = basketService;
@@ -41,8 +41,8 @@ namespace API.Controllers
                 .FirstOrDefaultAsync();
         }
 
-        [HttpPost()]
-        public async Task<ActionResult<int>> CreateOrder(CreateOrderDto orderDto)
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateOrder([FromBody] CreateOrderDto orderDto)
         {
             var basket = await _basketService.RetrieveBasket(User.Identity.Name);
             if (basket is null) { return BadRequest(new ProblemDetails { Title = "Can't find basket" }); }
