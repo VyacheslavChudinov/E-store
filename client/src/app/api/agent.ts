@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
 import { store } from "../store/configureStore";
-import { Order } from "../models/order";
+import { ShippingAddress } from "../models/order";
 
 export interface LoginPayload {
   username: string;
@@ -13,6 +13,11 @@ export interface RegisterPayload {
   username: string;
   password: string;
   email: string;
+}
+
+export interface CreateOrderPayload {
+  saveAddress: boolean;
+  shippingAddress: ShippingAddress;
 }
 
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
@@ -94,7 +99,8 @@ const Basket = {
 const Orders = {
   getOrders: () => requests.get("orders"),
   getOrder: (id: number) => requests.get(`orders/${id}`),
-  createOrder: (order: Order) => requests.post(`orders`, order),
+  createOrder: (orderPayload: CreateOrderPayload) =>
+    requests.post(`orders`, orderPayload),
   getSavedAddress: () => requests.get("/orders/savedAddress"),
 };
 

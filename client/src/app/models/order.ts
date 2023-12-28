@@ -8,7 +8,22 @@ export interface ShippingAddress {
   zip: string;
 }
 
+export interface OrderItem {
+  productId: number;
+  name: string;
+  pictureUrl: string;
+  price: number;
+  quantity: number;
+}
+
 export interface Order {
-  saveAddress: boolean;
+  id: number;
+  buyerId: string;
   shippingAddress: ShippingAddress;
+  createdTime: string;
+  orderItems: OrderItem[];
+  subtotal: number;
+  deliveryFee: number;
+  orderStatus: string;
+  total: number;
 }

@@ -3,6 +3,7 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/configureStore";
 import { logout } from "../../features/account/accountSlice";
 import { clearBasket } from "../../features/basket/basketSlice";
+import { Link } from "react-router-dom";
 
 function AccountMenu() {
   const { user } = useAppSelector((state) => state.account);
@@ -24,16 +25,17 @@ function AccountMenu() {
         {user?.email}
       </Button>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        {!!user && (
-          <MenuItem
-            onClick={() => {
-              dispatch(clearBasket());
-              dispatch(logout());
-            }}
-          >
-            Logout
-          </MenuItem>
-        )}
+        <MenuItem component={Link} to="/orders">
+          Orders
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            dispatch(clearBasket());
+            dispatch(logout());
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </>
   );
