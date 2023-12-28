@@ -16,7 +16,7 @@ export default function Review() {
       <Grid container>
         <Grid item xs={6}></Grid>
         <Grid item xs={6}>
-          <BasketSummary />
+          <BasketSummary items={basket?.items ?? []} />
         </Grid>
       </Grid>
     </>

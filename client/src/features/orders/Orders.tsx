@@ -10,6 +10,8 @@ import { formatPrice } from "../../app/utils/format";
 import Loading from "../../app/layouts/Loading";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { fetchOrders, ordersSelectors } from "./ordersSlice";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
 
 export default function Orders() {
   const dispatch = useAppDispatch();
@@ -35,30 +37,45 @@ export default function Orders() {
             <TableCell align="right">Subtotal</TableCell>
             <TableCell align="right">Delivery fee</TableCell>
             <TableCell align="right">Total</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders?.map((order) => (
-            <TableRow
-              key={order.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" align="left" scope="row">
-                {order.id}
-              </TableCell>
-              <TableCell component="th" align="center" scope="row">
-                {order.orderStatus}
-              </TableCell>
-              <TableCell align="right">
-                {new Date(order.createdTime).toLocaleDateString()}
-              </TableCell>
-              <TableCell align="right">{formatPrice(order.subtotal)}</TableCell>
-              <TableCell align="right">
-                {formatPrice(order.deliveryFee)}
-              </TableCell>
-              <TableCell align="right">{formatPrice(order.total)}</TableCell>
-            </TableRow>
-          ))}
+          {orders?.map((order) => {
+            return (
+              <TableRow
+                key={order.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" align="left" scope="row">
+                  {order.id}
+                </TableCell>
+                <TableCell component="th" align="center" scope="row">
+                  {order.orderStatus}
+                </TableCell>
+                <TableCell align="right">
+                  {new Date(order.createdTime).toLocaleDateString()}
+                </TableCell>
+                <TableCell align="right">
+                  {formatPrice(order.subtotal)}
+                </TableCell>
+                <TableCell align="right">
+                  {formatPrice(order.deliveryFee)}
+                </TableCell>
+                <TableCell align="right">{formatPrice(order.total)}</TableCell>
+                <TableCell align="center">
+                  <Button
+                    component={Link}
+                    to={`/orders/${order.id}`}
+                    variant="text"
+                    color="primary"
+                  >
+                    View
+                  </Button>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

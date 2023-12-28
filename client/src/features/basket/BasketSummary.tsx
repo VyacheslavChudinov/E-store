@@ -7,14 +7,17 @@ import {
   TableCell,
 } from "@mui/material";
 import { formatPrice } from "../../app/utils/format";
-import { useAppSelector } from "../../app/store/configureStore";
+import { BasketItem } from "../../app/models/basket";
 
-export default function BasketSummary() {
-  const { basket } = useAppSelector((state) => state.basket);
+export interface BasketSummaryProps {
+  items: BasketItem[];
+}
+
+export default function BasketSummary(props: BasketSummaryProps) {
+  const { items } = props;
 
   const subtotal =
-    basket?.items.reduce((sum, item) => sum + item.price * item.quantity, 0) ??
-    0;
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0) ?? 0;
   const deliveryFee = subtotal > 10000 ? 0 : 500;
   const total = subtotal + deliveryFee;
 

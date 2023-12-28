@@ -32,6 +32,21 @@ export const fetchOrders = createAsyncThunk<
   }
 );
 
+export const fetchOrder = createAsyncThunk<Order, number, { state: RootState }>(
+  "orders/fetchOrder",
+  async (id, thunkAPI) => {
+    try {
+      return await agent.Orders.getOrder(id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      thunkAPI.rejectWithValue({ error: error.data });
+    }
+  },
+  {
+    condition: () => !!localStorage.getItem("user"),
+  }
+);
+
 export const ordersSlice = createSlice({
   name: "orders",
   initialState: ordersAdapter.getInitialState<OrdersState>({
@@ -51,6 +66,17 @@ export const ordersSlice = createSlice({
       state.status = "idle";
     });
     builder.addCase(fetchOrders.rejected, (state) => {
+      state.status = "idle";
+    });
+
+    builder.addCase(fetchOrder.pending, (state) => {
+      state.status = "pendingOrder";
+    });
+    builder.addCase(fetchOrder.fulfilled, (state, action) => {
+      ordersAdapter.upsertOne(state, action.payload);
+      state.status = "idle";
+    });
+    builder.addCase(fetchOrder.rejected, (state) => {
       state.status = "idle";
     });
   },
