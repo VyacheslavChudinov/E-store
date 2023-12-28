@@ -95,6 +95,7 @@ const Orders = {
   getOrders: () => requests.get("orders"),
   getOrder: (id: number) => requests.get(`orders/${id}`),
   createOrder: (order: Order) => requests.post(`orders`, order),
+  getSavedAddress: () => requests.get("/orders/savedAddress"),
 };
 
 const ApiErrors = {

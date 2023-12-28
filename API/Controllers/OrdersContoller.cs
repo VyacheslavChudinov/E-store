@@ -4,6 +4,7 @@ using API.Entities;
 using API.Entities.OrderAggregator;
 using API.Extensions;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,16 @@ namespace API.Controllers
             return await _context.Orders
                 .Where(o => o.BuyerId == User.Identity.Name && o.Id == id)
                 .MapToOrderDto()
+                .FirstOrDefaultAsync();
+        }
+
+        [Authorize]
+        [HttpGet("SavedAddress")]
+        public async Task<ActionResult<UserAddress>> GetSavedAddress()
+        {
+            return await _userManager.Users
+                .Where(p => p.UserName == User.Identity.Name)
+                .Select(u => u.Address)
                 .FirstOrDefaultAsync();
         }
 
@@ -96,8 +107,6 @@ namespace API.Controllers
                     State = orderDto.ShippingAddress.State,
                     Name = orderDto.ShippingAddress.Name,
                 };
-
-                _context.Update(user);
             }
 
             var result = await _context.SaveChangesAsync() > 0;

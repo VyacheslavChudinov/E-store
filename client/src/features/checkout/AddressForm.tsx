@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import StoreFormCheckbox from "../../app/components/StoreFormCheckbox";
 
 export default function AddressForm() {
-  const { control } = useFormContext();
+  const { control, formState } = useFormContext();
 
   return (
     <>
@@ -48,9 +48,10 @@ export default function AddressForm() {
         </Grid>
         <Grid item xs={12}>
           <StoreFormCheckbox
+            disabled={!formState.isDirty}
             control={control}
             name="saveAddress"
-            label="Use this address for payment details"
+            label="Save as default address"
           />
         </Grid>
       </Grid>

@@ -3,11 +3,14 @@ import { useController, UseControllerProps } from "react-hook-form";
 
 interface StoreFormCheckboxProps extends UseControllerProps {
   label: string;
+  disabled: boolean;
 }
 
 export default function StoreFormCheckbox(props: StoreFormCheckboxProps) {
+  const { control, name, label, disabled } = props;
   const { field } = useController({
-    ...props,
+    control,
+    name,
     defaultValue: false,
   });
 
@@ -16,12 +19,13 @@ export default function StoreFormCheckbox(props: StoreFormCheckboxProps) {
       control={
         <Checkbox
           {...field}
+          disabled={disabled}
           color="secondary"
           value="yes"
           checked={field.value}
         />
       }
-      label={props.label}
+      label={label}
     />
   );
 }
