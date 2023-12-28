@@ -5,24 +5,22 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useEffect, useState } from "react";
-import { Order } from "../../app/models/order";
-import agent from "../../app/api/agent";
+import { useEffect } from "react";
 import { formatPrice } from "../../app/utils/format";
 import Loading from "../../app/layouts/Loading";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { fetchOrders, ordersSelectors } from "./ordersSlice";
 
 export default function Orders() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [orders, setOrders] = useState<Order[] | null>(null);
+  const dispatch = useAppDispatch();
+  const orders = useAppSelector(ordersSelectors.selectAll);
+  const { status } = useAppSelector((state) => state.orders);
 
   useEffect(() => {
-    agent.Orders.getOrders()
-      .then((response) => setOrders(response))
-      .catch((error) => console.log(error))
-      .finally(() => setIsLoading(false));
-  }, []);
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
-  if (isLoading) {
+  if (status !== "idle") {
     return <Loading message="Loading orders..."></Loading>;
   }
 
