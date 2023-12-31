@@ -36,9 +36,9 @@ namespace API.Services
             _context.Baskets.Remove(basket);
         }
 
-        public async void SaveBasket()
+        public async Task<Boolean> SaveBasket()
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

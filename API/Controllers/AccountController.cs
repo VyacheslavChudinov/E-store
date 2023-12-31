@@ -40,7 +40,7 @@ namespace API.Controllers
 
                 anonBasket.BuyerId = user.UserName;
                 Response.Cookies.Delete(BasketService.BuyerIdCookieKey);
-                _basketService.SaveBasket();
+                await _basketService.SaveBasket();
             }
 
             return new UserDto
