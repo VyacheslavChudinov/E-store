@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../../app/models/user";
 import agent, { LoginPayload } from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
@@ -71,6 +71,11 @@ export const accountSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.status = "idle";
+    });
+
     builder.addCase(fetchCurrentUser.rejected, (state) => {
       state.user = null;
       localStorage.removeItem("user");
@@ -82,13 +87,11 @@ export const accountSlice = createSlice({
       throw action.payload;
     });
 
-    builder.addMatcher(
-      isAnyOf(login.fulfilled, fetchCurrentUser.fulfilled),
-      (state, action) => {
-        state.user = action.payload;
-        state.status = "idle";
-      }
-    );
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.status = "idle";
+      router.navigate("/");
+    });
   },
 });
 
