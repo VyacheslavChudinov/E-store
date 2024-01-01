@@ -9,12 +9,12 @@ import Errors from "../../features/errors/Errors";
 import ServerError from "../../features/errors/ServerError";
 import { NotFound } from "../../features/errors/NotFound";
 import Basket from "../../features/basket/Basket";
-import Checkout from "../../features/checkout/Checkout";
 import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
 import RequireAuth from "./RequireAuth";
 import Orders from "../../features/orders/Orders";
 import OrderDetails from "../../features/orders/OrderDetails";
+import CheckoutContainer from "../../features/checkout/CheckoutContainer";
 
 export const router = createBrowserRouter([
   {
@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/checkout",
-            element: <Checkout />,
+            element: <CheckoutContainer />,
           },
           {
             path: "/orders",
