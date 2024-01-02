@@ -32,8 +32,7 @@ namespace API.Controllers
             basket.PaymentIntentId = basket.PaymentIntentId ?? paymentIntent.Id;
             basket.ClientSecret = basket.ClientSecret ?? paymentIntent.ClientSecret;
 
-            var isBasketSaved = await _basketService.SaveBasket();
-            if (!isBasketSaved) { return BadRequest(new ProblemDetails { Title = "Problem updating basket with payment intent" }); }
+            await _basketService.SaveBasket();
 
             return basket.MapBasketToDto();
         }
