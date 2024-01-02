@@ -104,6 +104,10 @@ const Orders = {
   getSavedAddress: () => requests.get("/orders/savedAddress"),
 };
 
+const Payments = {
+  createPaymentIntent: () => requests.post(`payments`, {}),
+};
+
 const ApiErrors = {
   get400Error: () => requests.get("errors/bad-request"),
   get401Error: () => requests.get("errors/unathorized"),
@@ -125,6 +129,7 @@ const agent = {
   ApiErrors,
   Account,
   Orders,
+  Payments,
 };
 
 export default agent;
