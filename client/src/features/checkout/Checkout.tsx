@@ -16,10 +16,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchema } from "./CheckoutValidation";
 import agent from "../../app/api/agent";
 import { ShippingAddress } from "../../app/models/order";
-import { useAppDispatch } from "../../app/store/configureStore";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { clearBasket } from "../basket/basketSlice";
 import { LoadingButton } from "@mui/lab";
 import { StripeElementType } from "@stripe/stripe-js";
+import {
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
@@ -52,6 +57,11 @@ export default function CheckoutPage() {
     cardExpiry: false,
     cardCvc: false,
   });
+  const [paymentMessage, setPaymentMessage] = useState("");
+  const [paymentSucceeded, setPaymentSucceeded] = useState(false);
+  const { basket } = useAppSelector((state) => state.basket);
+  const stripe = useStripe();
+  const elements = useElements();
 
   const methods = useForm({
     mode: "onTouched",
@@ -97,25 +107,54 @@ export default function CheckoutPage() {
     }
   }
 
-  const handleNext = async (data: FieldValues) => {
-    const { cardName: _, saveAddress, ...shippingAddress } = data;
+  const submitOrder = async (data: FieldValues) => {
+    const { cardName, saveAddress, ...shippingAddress } = data;
+    if (!stripe || !elements || !basket?.clientSecret) {
+      return;
+    }
 
-    if (activeStep == 2) {
+    try {
       setIsLoading(true);
+      const cardElement = elements.getElement(CardNumberElement);
+      const paymentResults = await stripe.confirmCardPayment(
+        basket?.clientSecret,
+        {
+          payment_method: {
+            card: cardElement!,
+            billing_details: {
+              name: cardName,
+            },
+          },
+        }
+      );
 
-      try {
+      if (paymentResults.paymentIntent?.status === "succeeded") {
         const createOderdId = await agent.Orders.createOrder({
           saveAddress,
           shippingAddress: shippingAddress as ShippingAddress,
         });
         setOrderNumber(createOderdId);
+        setPaymentSucceeded(true);
+        setPaymentMessage("Payment has been received.");
         setActiveStep((prev) => prev + 1);
         dispatch(clearBasket());
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
+      } else {
+        setPaymentSucceeded(false);
+        setPaymentMessage(paymentResults.error?.message ?? "");
+        setActiveStep((prev) => prev + 1);
       }
+
+      console.log(paymentResults);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNext = async (data: FieldValues) => {
+    if (activeStep == steps.length - 1) {
+      await submitOrder(data);
     } else {
       setActiveStep(activeStep + 1);
     }
@@ -157,13 +196,21 @@ export default function CheckoutPage() {
           {activeStep === steps.length ? (
             <>
               <Typography variant="h5" gutterBottom>
-                Thank you for your order.
+                {paymentMessage}
               </Typography>
-              <Typography variant="subtitle1">
-                Your order number is {orderNumber}. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
-              </Typography>
+              {paymentSucceeded && (
+                <Typography variant="subtitle1">
+                  Your order number is {orderNumber}. We have emailed your order
+                  confirmation, and will send you an update when your order has
+                  shipped.
+                </Typography>
+              )}
+
+              {!paymentSucceeded && (
+                <Button variant="contained" onClick={handleBack}>
+                  Go back and try again
+                </Button>
+              )}
             </>
           ) : (
             <form onSubmit={methods.handleSubmit(handleNext)}>
