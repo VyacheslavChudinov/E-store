@@ -7,8 +7,20 @@ import {
   CardNumberElement,
 } from "@stripe/react-stripe-js";
 import { StripeInput } from "./StripeInput";
+import { CardState, StripeInputEvent } from "./Checkout";
+import { ChangeEvent } from "react";
 
-export default function PaymentForm() {
+interface PaymentFormProps {
+  onCardInputChange: (
+    event: StripeInputEvent & ChangeEvent<HTMLInputElement>
+  ) => void;
+  cardState: CardState;
+}
+
+export default function PaymentForm({
+  onCardInputChange,
+  cardState,
+}: PaymentFormProps) {
   const { control } = useFormContext();
 
   return (
@@ -26,8 +38,10 @@ export default function PaymentForm() {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
+            onChange={onCardInputChange}
+            error={!!cardState.elementError.cardNumber}
+            helperText={cardState.elementError.cardNumber}
             label="Card number"
-            name="cardNumber"
             autoComplete="cc-number"
             fullWidth
             variant="outlined"
@@ -42,8 +56,10 @@ export default function PaymentForm() {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
+            onChange={onCardInputChange}
+            error={!!cardState.elementError.cardExpiry}
+            helperText={cardState.elementError.cardExpiry}
             label="Expiry date"
-            name="expDate"
             fullWidth
             autoComplete="cc-exp"
             variant="outlined"
@@ -58,8 +74,10 @@ export default function PaymentForm() {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
+            onChange={onCardInputChange}
+            error={!!cardState.elementError.cardCvc}
+            helperText={cardState.elementError.cardCvc}
             label="CVV"
-            name="cvv"
             fullWidth
             autoComplete="cc-csc"
             variant="outlined"

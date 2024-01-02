@@ -7,7 +7,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
@@ -19,20 +19,24 @@ import { ShippingAddress } from "../../app/models/order";
 import { useAppDispatch } from "../../app/store/configureStore";
 import { clearBasket } from "../basket/basketSlice";
 import { LoadingButton } from "@mui/lab";
+import { StripeElementType } from "@stripe/stripe-js";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
-function getStepContent(step: number) {
-  switch (step) {
-    case 0:
-      return <AddressForm />;
-    case 1:
-      return <Review />;
-    case 2:
-      return <PaymentForm />;
-    default:
-      throw new Error("Unknown step");
-  }
+export interface CardComplete {
+  cardNumber: boolean;
+  cardExpiry: boolean;
+  cardCvc: boolean;
+}
+
+export interface CardState {
+  elementError: { [key in StripeElementType]?: string };
+}
+
+export interface StripeInputEvent {
+  complete: boolean;
+  error: { message: string };
+  elementType: string;
 }
 
 export default function CheckoutPage() {
@@ -42,13 +46,59 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
+  const [cardState, setCardState] = useState<CardState>({ elementError: {} });
+  const [cardComplete, setCardComplete] = useState<CardComplete>({
+    cardNumber: false,
+    cardExpiry: false,
+    cardCvc: false,
+  });
+
   const methods = useForm({
     mode: "onTouched",
     resolver: yupResolver(currentValidationSchema),
   });
 
+  const isValidPayment =
+    activeStep !== steps.length - 1 ||
+    (cardComplete.cardNumber &&
+      cardComplete.cardExpiry &&
+      cardComplete.cardCvc);
+
+  function onCardInputChange(
+    event: ChangeEvent<HTMLInputElement> & StripeInputEvent
+  ) {
+    const elementType = event.elementType;
+    const errorMessage = event.error?.message;
+    const isComplete = event.complete;
+
+    setCardState((prev: CardState) => ({
+      ...prev,
+      elementError: { ...prev.elementError, [elementType]: errorMessage },
+    }));
+
+    setCardComplete((prev) => ({ ...prev, [elementType]: isComplete }));
+  }
+
+  function getStepContent(step: number) {
+    switch (step) {
+      case 0:
+        return <AddressForm />;
+      case 1:
+        return <Review />;
+      case 2:
+        return (
+          <PaymentForm
+            onCardInputChange={onCardInputChange}
+            cardState={cardState}
+          />
+        );
+      default:
+        throw new Error("Unknown step");
+    }
+  }
+
   const handleNext = async (data: FieldValues) => {
-    const { cardName, saveAddress, ...shippingAddress } = data;
+    const { cardName: _, saveAddress, ...shippingAddress } = data;
 
     if (activeStep == 2) {
       setIsLoading(true);
@@ -126,7 +176,7 @@ export default function CheckoutPage() {
                 )}
                 <LoadingButton
                   loading={isLoading}
-                  disabled={!methods.formState.isValid}
+                  disabled={!methods.formState.isValid || !isValidPayment}
                   variant="contained"
                   type="submit"
                   sx={{ mt: 3, ml: 1 }}
