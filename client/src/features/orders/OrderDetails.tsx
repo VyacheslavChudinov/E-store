@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { fetchOrder, ordersSelectors } from "./ordersSlice";
 import { BasketItem } from "../../app/models/basket";
 import BasketSummary from "../basket/BasketSummary";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 
 export default function OrderDetails() {
@@ -28,7 +28,17 @@ export default function OrderDetails() {
   return (
     <>
       <Grid container>
-        <Grid item xs={12} display={"flex"} justifyContent={"flex-end"}>
+        <Grid item xs={6}>
+          <Typography
+            variant="h6"
+            color={"GrayText"}
+          >{`Order #${order.id}. `}</Typography>
+          <Typography
+            variant="h6"
+            color={"GrayText"}
+          >{`Status: ${order.orderStatus}`}</Typography>
+        </Grid>
+        <Grid item xs={6} display={"flex"} justifyContent={"flex-end"}>
           <Button
             component={Link}
             to={"/orders"}
