@@ -19,7 +19,7 @@ namespace API.Services
             var intent = new PaymentIntent();
 
             var subtotal = basket.Items.Sum(item => item.Product.Price * item.Quantity);
-            var deliveryFee = subtotal > 10000 ? 500 : 0;
+            var deliveryFee = subtotal < 10000 ? 500 : 0;
 
             if (string.IsNullOrEmpty(basket.PaymentIntentId))
             {
