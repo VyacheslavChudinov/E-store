@@ -37,7 +37,7 @@ namespace API.Services
                 {
                     Amount = subtotal + deliveryFee
                 };
-                intent = await paymentService.UpdateAsync(basket.ClientSecret, options);
+                intent = await paymentService.UpdateAsync(basket.PaymentIntentId, options);
             }
 
             return intent;
