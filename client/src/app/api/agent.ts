@@ -22,7 +22,7 @@ export interface CreateOrderPayload {
 
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 
-axios.defaults.baseURL = "http://localhost:5000/api/";
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use((config) => {
@@ -36,7 +36,9 @@ axios.interceptors.request.use((config) => {
 
 axios.interceptors.response.use(
   async (response: AxiosResponse) => {
-    await sleep();
+    if (import.meta.env.DEV) {
+      await sleep();
+    }
 
     const pagination = response.headers["pagination"];
     if (pagination) {
@@ -50,7 +52,11 @@ axios.interceptors.response.use(
   },
   async (error) => {
     const { data, status } = error.response as AxiosResponse;
-    await sleep();
+
+    if (import.meta.env.DEV) {
+      await sleep();
+    }
+
     switch (status) {
       case 400:
         if (data.errors) {
