@@ -59,10 +59,12 @@ export const router = createBrowserRouter([
         path: "/about",
         element: <About />,
       },
-      {
-        path: "/errors",
-        element: <Errors />,
-      },
+      import.meta.env.DEV
+        ? {
+            path: "/errors",
+            element: <Errors />,
+          }
+        : {},
       {
         path: "/server-error",
         element: <ServerError />,
