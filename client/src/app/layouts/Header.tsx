@@ -35,8 +35,8 @@ const navLinksStyle = {
   color: "inherit",
   typography: "h6",
   textDecoration: "none",
-  "&:hover": { color: "secondary.main" },
-  "&.active": { color: "secondary.main" },
+  "&:hover": { color: "error.light" },
+  "&.active": { color: "error.light" },
 };
 
 export default function Header({ darkMode, setDarkMode }: Props) {
