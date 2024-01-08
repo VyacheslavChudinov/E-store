@@ -2,6 +2,7 @@ using System.Text;
 using API.Data;
 using API.Entities;
 using API.Middleware;
+using API.RequestHelpers;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -46,7 +48,10 @@ builder.Services.AddSwaggerGen(c =>
 string connString;
 if (builder.Environment.IsDevelopment())
 {
-    connString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<StoreContext>(opt =>
+    {
+        opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    });
 }
 else
 {
@@ -66,13 +71,11 @@ else
     var updatedHost = pgHost.Replace("flycast", "internal");
 
     connString = $"Server={updatedHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};";
+    builder.Services.AddDbContext<StoreContext>(opt =>
+    {
+        opt.UseNpgsql(connString);
+    });
 }
-
-builder.Services.AddDbContext<StoreContext>(opt =>
-{
-    opt.UseNpgsql(connString);
-});
-
 
 builder.Services.AddCors();
 
