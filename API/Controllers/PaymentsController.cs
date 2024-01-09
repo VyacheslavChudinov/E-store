@@ -41,7 +41,7 @@ namespace API.Controllers
 
             await _basketService.SaveBasket();
 
-            return basket.MapBasketToDto();
+            return basket.MapTo<BasketDto>();
         }
 
         [HttpPost("webhook")]
