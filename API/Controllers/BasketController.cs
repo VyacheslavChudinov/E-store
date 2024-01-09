@@ -29,7 +29,7 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return basket?.MapBasketToDto();
+            return basket?.MapTo<BasketDto>();
         }
 
         [HttpPost]
@@ -49,7 +49,7 @@ namespace API.Controllers
                 return BadRequest(new ProblemDetails { Title = "Error saving item in basket" });
             }
 
-            return CreatedAtRoute("GetBasket", basket?.MapBasketToDto());
+            return CreatedAtRoute("GetBasket", basket?.MapTo<BasketDto>());
         }
 
         [HttpDelete]

@@ -1,9 +1,11 @@
 using System.Text;
 using API.Data;
 using API.Entities;
+using API.Extensions;
 using API.Middleware;
 using API.RequestHelpers;
 using API.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -130,6 +132,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapFallbackToController("Index", "Fallback");
+
+var mapper = app.Services.GetRequiredService<IMapper>();
+MappingExtensions.InitializeMapper(mapper);
 
 var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
