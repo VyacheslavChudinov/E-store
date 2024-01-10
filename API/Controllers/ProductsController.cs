@@ -81,12 +81,24 @@ namespace API.Controllers
             _mapper.Map(updateProductDto, product);
 
             var result = await _context.SaveChangesAsync() > 0;
-            if (!result)
-            {
-                return BadRequest(new ProblemDetails { Title = "Problem updating product." });
-            }
+            if (!result) { return BadRequest(new ProblemDetails { Title = "Problem updating product." }); }
 
             return NoContent();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProduct(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product is null) { return NotFound(); }
+
+            _context.Products.Remove(product);
+
+            var result = await _context.SaveChangesAsync() > 0;
+            if (!result) { return BadRequest(new ProblemDetails { Title = "Problem deleting product." }); }
+
+            return Ok();
         }
     }
 }
