@@ -10,6 +10,7 @@ namespace API.RequestHelpers
         public MappingProfiles()
         {
             CreateMap<CreateProductDto, Product>();
+            CreateMap<UpdateProductDto, Product>();
 
             CreateMap<Basket, BasketDto>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
