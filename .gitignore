@@ -480,3 +480,4 @@ API/appsettings.json
 .vscode/launch.json
 API/store.db-shm
 API/store.db-wal
+*.db
