@@ -10,36 +10,31 @@ using Stripe;
 
 namespace API.Controllers
 {
-    public class PaymentsController : BaseApiController
-    {
-        private readonly PaymentService _paymentService;
-        private readonly BasketService _basketService;
-        private readonly IConfiguration _config;
-        private readonly StoreContext _context;
-        public PaymentsController(StoreContext context, PaymentService paymentService,
+    public class PaymentsController(StoreContext context, PaymentService paymentService,
             BasketService basketService, IConfiguration config)
-        {
-            _basketService = basketService;
-            _paymentService = paymentService;
-            _config = config;
-            _context = context;
-        }
-
+        : BaseApiController
+    {
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<BasketDto>> CreateOrUpdatePaymentIntent()
         {
-            var basket = await _basketService.RetrieveBasket(User.Identity.Name);
-            if (basket is null) { return NotFound(); }
+            var basket = await basketService.RetrieveBasket(User.Identity?.Name);
+            if (basket is null)
+            {
+                return NotFound();
+            }
 
-            var paymentIntent = await _paymentService.CreateOrUpdatePaymentIntent(basket);
-            if (paymentIntent is null) { return BadRequest(new ProblemDetails { Title = "Problem creating payment intent" }); }
+            var paymentIntent = await paymentService.CreateOrUpdatePaymentIntent(basket);
+            if (paymentIntent is null)
+            {
+                return BadRequest(new ProblemDetails { Title = "Problem creating payment intent" });
+            }
 
 
             basket.PaymentIntentId = basket.PaymentIntentId ?? paymentIntent.Id;
             basket.ClientSecret = basket.ClientSecret ?? paymentIntent.ClientSecret;
 
-            await _basketService.SaveBasket();
+            await basketService.SaveBasket();
 
             return basket.MapTo<BasketDto>();
         }
@@ -50,17 +45,17 @@ namespace API.Controllers
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             var stripeEvent = EventUtility.ConstructEvent(json,
                 Request.Headers["Stripe-Signature"],
-                _config["StripeSettings:WhSecret"]);
+                config["StripeSettings:WhSecret"]);
 
             var charge = (Charge)stripeEvent.Data.Object;
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.PaymentIntentId == charge.PaymentIntentId);
+            var order = await context.Orders.FirstOrDefaultAsync(o => o.PaymentIntentId == charge.PaymentIntentId);
 
             if (charge.Status == "succeeded")
             {
                 order.OrderStatus = OrderStatus.PaymentReceived;
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return new EmptyResult();
         }
