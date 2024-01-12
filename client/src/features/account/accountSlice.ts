@@ -1,10 +1,13 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  asyncThunkCreator,
+  buildCreateSlice,
+} from "@reduxjs/toolkit";
 import { User } from "../../app/models/user";
-import agent, { LoginPayload } from "../../app/api/agent";
+import agent from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
 import { setBasket } from "../basket/basketSlice";
-
 export interface AccountState {
   user: User | null;
   status: string;
@@ -15,84 +18,85 @@ const initialState: AccountState = {
   status: "idle",
 };
 
-export const login = createAsyncThunk<User, LoginPayload>(
-  "account/login",
-  async (loginPayload, thunkAPI) => {
-    try {
-      const { basket, ...user } = await agent.Account.login(loginPayload);
-      if (basket) {
-        thunkAPI.dispatch(setBasket(basket));
-      }
-      localStorage.setItem("user", JSON.stringify(user));
-
-      return user;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ error: error.data });
-    }
-  }
-);
-
-export const fetchCurrentUser = createAsyncThunk<User>(
-  "account/fetchCurrentUser",
-  async (_, thunkAPI) => {
-    const userStorage = JSON.parse(localStorage.getItem("user")!);
-    thunkAPI.dispatch(setUser(userStorage));
-
-    try {
-      const { basket, ...user } = await agent.Account.currentUser();
-      if (basket) {
-        thunkAPI.dispatch(setBasket(basket));
-      }
-      localStorage.setItem("user", JSON.stringify(user));
-
-      return user;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ error: error.data });
-    }
-  },
-  {
-    condition: () => !!localStorage.getItem("user"),
-  }
-);
-
-export const accountSlice = createSlice({
-  name: "User",
-  initialState,
-  reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
-    },
-    logout: (state) => {
-      state.user = null;
-      localStorage.removeItem("user");
-      router.navigate("/");
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.status = "idle";
-    });
-
-    builder.addCase(fetchCurrentUser.rejected, (state) => {
-      state.user = null;
-      localStorage.removeItem("user");
-      toast.error("Session expired - please login again");
-      router.navigate("/");
-    });
-
-    builder.addCase(login.rejected, (_, action) => {
-      throw action.payload;
-    });
-
-    builder.addCase(login.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.status = "idle";
-      router.navigate("/");
-    });
-  },
+const createSliceWithThunk = buildCreateSlice({
+  creators: { asyncThunk: asyncThunkCreator },
 });
 
-export const { logout, setUser } = accountSlice.actions;
+export const accountSlice = createSliceWithThunk({
+  name: "User",
+  initialState,
+  reducers: (create) => ({
+    setUser: create.reducer((state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+    }),
+    logout: create.reducer((state) => {
+      state.user = null;
+      localStorage.removeItem("user");
+      router.navigate("/");
+    }),
+
+    login: create.asyncThunk(
+      async (loginPayload, thunkAPI) => {
+        try {
+          const { basket, ...user } = await agent.Account.login(loginPayload);
+          if (basket) {
+            thunkAPI.dispatch(setBasket(basket));
+          }
+          localStorage.setItem("user", JSON.stringify(user));
+
+          return user;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          return thunkAPI.rejectWithValue({ error: error.data });
+        }
+      },
+      {
+        fulfilled: (state, action) => {
+          state.user = action.payload;
+          state.status = "idle";
+          router.navigate("/");
+        },
+        rejected: (_, action) => {
+          throw action.payload;
+        },
+      }
+    ),
+
+    fetchCurrentUser: create.asyncThunk(
+      async (_, thunkAPI) => {
+        const userStorage = JSON.parse(localStorage.getItem("user")!);
+        thunkAPI.dispatch(setUser(userStorage));
+
+        try {
+          const { basket, ...user } = await agent.Account.currentUser();
+          if (basket) {
+            thunkAPI.dispatch(setBasket(basket));
+          }
+          localStorage.setItem("user", JSON.stringify(user));
+
+          return user;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          return thunkAPI.rejectWithValue({ error: error.data });
+        }
+      },
+      {
+        fulfilled: (state, action) => {
+          state.user = action.payload;
+          state.status = "idle";
+        },
+        rejected: (state) => {
+          state.user = null;
+          localStorage.removeItem("user");
+          toast.error("Session expired - please login again");
+          router.navigate("/");
+        },
+
+        options: { condition: () => !!localStorage.getItem("user") },
+      }
+    ),
+  }),
+});
+
+export const { fetchCurrentUser, login, logout, setUser } =
+  accountSlice.actions;
