@@ -1,11 +1,6 @@
 import ProductList from "./ProductList";
-import { useEffect, useState } from "react";
-import {
-  fetchFilters,
-  fetchProductsAsync,
-  productSelectors,
-  setProductParams,
-} from "./catalogSlice";
+import { useState } from "react";
+import { setProductParams } from "./catalogSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 
 import { Grid, Paper } from "@mui/material";
@@ -13,6 +8,7 @@ import ProductSearch from "./ProductSearch";
 import RadioButtonGroup from "../../app/components/RadioButtonGroup";
 import CheckboxGroup from "../../app/components/CheckboxGroup";
 import SimplePagination from "../../app/components/SimplePagination";
+import useProducts from "../../app/hooks/useProducts";
 
 const sortOptions = [
   { value: "name", label: "Alphabetical - A-Z" },
@@ -22,12 +18,11 @@ const sortOptions = [
 ];
 
 export default function Catalog() {
-  const products = useAppSelector(productSelectors.selectAll);
-  const { paginationDetails } = useAppSelector((state) => state.catalog);
-  const dispatch = useAppDispatch();
-  const { productsLoaded, filtersLoaded, brands, types, productParams } =
-    useAppSelector((state) => state.catalog);
+  const { products, filtersLoaded, brands, types, paginationDetails } =
+    useProducts();
 
+  const dispatch = useAppDispatch();
+  const { productParams } = useAppSelector((state) => state.catalog);
   const [selectedValue, setSelectedValue] = useState(productParams.orderBy);
 
   function onPaginationChange(pageNumber: number) {
@@ -46,18 +41,6 @@ export default function Catalog() {
   function onTypeChange(selectedTypes: string[]) {
     dispatch(setProductParams({ types: selectedTypes, pageNumber: 1 }));
   }
-
-  useEffect(() => {
-    if (!productsLoaded) {
-      dispatch(fetchProductsAsync());
-    }
-  }, [dispatch, productsLoaded]);
-
-  useEffect(() => {
-    if (!filtersLoaded) {
-      dispatch(fetchFilters());
-    }
-  }, [dispatch, filtersLoaded]);
 
   return (
     <Grid container spacing={4} sx={{ mb: 2 }}>

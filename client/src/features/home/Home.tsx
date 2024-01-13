@@ -1,16 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import Slider from "react-slick";
-import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { fetchProductsAsync, productSelectors } from "../catalog/catalogSlice";
-import { useEffect } from "react";
 import ProductCard from "../catalog/ProductCard";
 import Loading from "../../app/layouts/Loading";
 import { ArrowCircleLeft, ArrowCircleRight } from "@mui/icons-material";
+import useProducts from "../../app/hooks/useProducts";
 
 export default function Home() {
-  const dispatch = useAppDispatch();
-  const products = useAppSelector(productSelectors.selectAll);
-  const { productsLoaded } = useAppSelector((state) => state.catalog);
+  const { products, productsLoaded } = useProducts();
 
   const settings = {
     dots: true,
@@ -35,12 +31,6 @@ export default function Home() {
       />
     ),
   };
-
-  useEffect(() => {
-    if (!productsLoaded) {
-      dispatch(fetchProductsAsync());
-    }
-  }, [dispatch, productsLoaded]);
 
   if (!productsLoaded) {
     return <Loading message="Loading products..."></Loading>;
