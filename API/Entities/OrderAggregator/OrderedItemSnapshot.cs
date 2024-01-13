@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Entities.OrderAggregator
+namespace API.Entities.OrderAggregator;
+
+[Owned]
+public class OrderedItemSnapshot
 {
-    [Owned]
-    public class OrderedItemSnapshot
-    {
-        public int ProductId { get; set; }
-        public string Name { get; set; }
-        public string PictureUrl { get; set; }
-    }
+    public int ProductId { get; set; }
+    public string Name { get; set; }
+    public string PictureUrl { get; set; }
 }

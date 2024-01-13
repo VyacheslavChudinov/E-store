@@ -58,9 +58,7 @@ public class ProductsController(StoreContext context, IMapper mapper, ImageServi
         {
             var imageResult = await imageService.AddImageAsync(createProductDto.PictureFile);
             if (imageResult.Error is not null)
-            {
                 return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
-            }
 
             product.PictureUrl = imageResult.SecureUrl.ToString();
             product.PublicId = imageResult.PublicId;
@@ -85,14 +83,9 @@ public class ProductsController(StoreContext context, IMapper mapper, ImageServi
         {
             var imageResult = await imageService.AddImageAsync(updateProductDto.PictureFile);
             if (imageResult.Error is not null)
-            {
                 return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
-            }
 
-            if (!string.IsNullOrEmpty(product.PublicId))
-            {
-                await imageService.DeleteImageAsync(product.PublicId);
-            }
+            if (!string.IsNullOrEmpty(product.PublicId)) await imageService.DeleteImageAsync(product.PublicId);
 
             product.PictureUrl = imageResult.SecureUrl.ToString();
             product.PublicId = imageResult.PublicId;
@@ -113,10 +106,7 @@ public class ProductsController(StoreContext context, IMapper mapper, ImageServi
         var product = await context.Products.FindAsync(id);
         if (product is null) return NotFound();
 
-        if (!string.IsNullOrEmpty(product.PublicId))
-        {
-            await imageService.DeleteImageAsync(product.PublicId);
-        }
+        if (!string.IsNullOrEmpty(product.PublicId)) await imageService.DeleteImageAsync(product.PublicId);
 
         context.Products.Remove(product);
 

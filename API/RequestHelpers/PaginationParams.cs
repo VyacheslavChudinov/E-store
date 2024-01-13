@@ -1,16 +1,16 @@
-namespace API.RequestHelpers
+namespace API.RequestHelpers;
+
+public class PaginationParams
 {
-    public class PaginationParams
+    private const int MaxPageSize = 100;
+
+    private int _pageSize = MaxPageSize;
+
+    public int PageSize
     {
-        private const int MaxPageSize = 100;
-
-        private int _pageSize = MaxPageSize;
-        public int PageSize
-        {
-            get { return _pageSize; }
-            set { _pageSize = value > MaxPageSize ? MaxPageSize : value; }
-        }
-
-        public int PageNumber { get; set; } = 1;
+        get => _pageSize;
+        set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
     }
+
+    public int PageNumber { get; set; } = 1;
 }

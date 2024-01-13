@@ -1,44 +1,39 @@
 using API.Data;
-using API.DTOs;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services
+namespace API.Services;
+
+public class BasketService
 {
-    public class BasketService
+    public static readonly string BuyerIdCookieKey = "buyerId";
+    private readonly StoreContext _context;
+
+    public BasketService(StoreContext context)
+
     {
-        public static readonly string BuyerIdCookieKey = "buyerId";
-        private StoreContext _context;
+        _context = context;
+    }
 
-        public BasketService(StoreContext context)
+    public async Task<Basket> RetrieveBasket(string buyerId)
+    {
+        if (string.IsNullOrEmpty(buyerId)) return null;
 
-        {
-            _context = context;
-        }
+        return await _context.Baskets
+            .Include(i => i.Items)
+            .ThenInclude(p => p.Product)
+            .FirstOrDefaultAsync(x => x.BuyerId == buyerId);
+    }
 
-        public async Task<Basket> RetrieveBasket(string buyerId)
-        {
-            if (string.IsNullOrEmpty(buyerId))
-            {
-                return null;
-            }
+    public void RemoveBasket(Basket basket)
+    {
+        if (basket is null) return;
 
-            return await _context.Baskets
-                .Include(i => i.Items)
-                .ThenInclude(p => p.Product)
-                .FirstOrDefaultAsync(x => x.BuyerId == buyerId);
-        }
+        _context.Baskets.Remove(basket);
+    }
 
-        public void RemoveBasket(Basket basket)
-        {
-            if (basket is null) { return; }
-
-            _context.Baskets.Remove(basket);
-        }
-
-        public async Task<Boolean> SaveBasket()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
+    public async Task<bool> SaveBasket()
+    {
+        return await _context.SaveChangesAsync() > 0;
     }
 }

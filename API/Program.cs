@@ -49,20 +49,13 @@ builder.Services.AddSwaggerGen(c =>
 
 
 if (builder.Environment.IsDevelopment())
-{
     builder.Services.AddDbContext<StoreContext, SqliteStoreContext>();
-}
 else
-{
     builder.Services.AddDbContext<StoreContext, PostgresStoreContext>();
-}
 
 builder.Services.AddCors();
 
-builder.Services.AddIdentityCore<User>(opt =>
-    {
-        opt.User.RequireUniqueEmail = true;
-    })
+builder.Services.AddIdentityCore<User>(opt => { opt.User.RequireUniqueEmail = true; })
     .AddRoles<Role>()
     .AddEntityFrameworkStores<StoreContext>();
 
@@ -74,7 +67,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:TokenKey"]))
+        IssuerSigningKey =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:TokenKey"]))
     };
 });
 
@@ -92,19 +86,13 @@ app.UseMiddleware<ExceptionMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
-    });
+    app.UseSwaggerUI(c => { c.ConfigObject.AdditionalItems.Add("persistAuthorization", "true"); });
 }
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseCors(opt =>
-{
-    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
-});
+app.UseCors(opt => { opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000"); });
 
 app.UseAuthentication();
 app.UseAuthorization();
