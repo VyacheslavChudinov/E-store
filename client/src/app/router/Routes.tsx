@@ -15,6 +15,7 @@ import RequireAuth from "./RequireAuth";
 import Orders from "../../features/orders/Orders";
 import OrderDetails from "../../features/orders/OrderDetails";
 import CheckoutContainer from "../../features/checkout/CheckoutContainer";
+import Inventory from "../../features/admin/Inventory";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
           {
             path: "/orders/:id",
             element: <OrderDetails />,
+          },
+          {
+            path: "/inventory",
+            element: <Inventory />,
           },
         ],
       },

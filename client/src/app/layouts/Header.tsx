@@ -77,6 +77,11 @@ export default function Header({ darkMode, setDarkMode }: Props) {
               <Typography>{title.toUpperCase()}</Typography>
             </ListItem>
           ))}
+          {!!user && (
+            <ListItem component={NavLink} to={"/inventory"} sx={navLinksStyle}>
+              <Typography>INVENTORY</Typography>
+            </ListItem>
+          )}
         </List>
 
         <Box display={"flex"} alignItems={"center"}>
