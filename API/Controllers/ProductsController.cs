@@ -74,7 +74,7 @@ public class ProductsController(StoreContext context, IMapper mapper, ImageServi
 
     [Authorize(Roles = "Admin")]
     [HttpPut]
-    public async Task<ActionResult> UpdateProduct([FromForm] UpdateProductDto updateProductDto)
+    public async Task<ActionResult<Product>> UpdateProduct([FromForm] UpdateProductDto updateProductDto)
     {
         var product = await context.Products.FindAsync(updateProductDto.Id);
         if (product is null) return NotFound();
@@ -85,7 +85,10 @@ public class ProductsController(StoreContext context, IMapper mapper, ImageServi
             if (imageResult.Error is not null)
                 return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
 
-            if (!string.IsNullOrEmpty(product.PublicId)) await imageService.DeleteImageAsync(product.PublicId);
+            if (!string.IsNullOrEmpty(product.PublicId))
+            {
+                await imageService.DeleteImageAsync(product.PublicId);
+            }
 
             product.PictureUrl = imageResult.SecureUrl.ToString();
             product.PublicId = imageResult.PublicId;
@@ -96,7 +99,7 @@ public class ProductsController(StoreContext context, IMapper mapper, ImageServi
         var result = await context.SaveChangesAsync() > 0;
         if (!result) return BadRequest(new ProblemDetails { Title = "Problem updating product." });
 
-        return NoContent();
+        return Ok(product);
     }
 
     [Authorize(Roles = "Admin")]
