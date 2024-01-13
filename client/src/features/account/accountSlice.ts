@@ -62,7 +62,7 @@ export const accountSlice = createSliceWithThunk({
       }
     ),
 
-    fetchCurrentUser: create.asyncThunk(
+    fetchCurrentUser: create.asyncThunk<void, User>(
       async (_, thunkAPI) => {
         const userStorage = JSON.parse(localStorage.getItem("user")!);
         thunkAPI.dispatch(setUser(userStorage));

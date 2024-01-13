@@ -35,7 +35,7 @@ export const basketSlice = createSliceWithThunk({
       state.basket = null;
     }),
 
-    fetchCurrentBasket: create.asyncThunk(
+    fetchCurrentBasket: create.asyncThunk<void, Basket>(
       async (_, thunkAPI) => {
         try {
           return await agent.Basket.get();
