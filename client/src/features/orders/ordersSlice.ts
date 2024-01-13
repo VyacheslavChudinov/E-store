@@ -1,7 +1,7 @@
 import {
-  createAsyncThunk,
+  asyncThunkCreator,
+  buildCreateSlice,
   createEntityAdapter,
-  createSlice,
 } from "@reduxjs/toolkit";
 import { Order } from "../../app/models/order";
 import agent from "../../app/api/agent";
@@ -13,77 +13,78 @@ export interface OrdersState {
 
 const ordersAdapter = createEntityAdapter<Order>();
 
-export const fetchOrders = createAsyncThunk<
-  Order[],
-  void,
-  { state: RootState }
->(
-  "orders/fetchOrders",
-  async (_, thunkAPI) => {
-    try {
-      return await agent.Orders.getOrders();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      thunkAPI.rejectWithValue({ error: error.data });
-    }
-  },
-  {
-    condition: () => !!localStorage.getItem("user"),
-  }
-);
+const createSliceWithThunk = buildCreateSlice({
+  creators: { asyncThunk: asyncThunkCreator },
+});
 
-export const fetchOrder = createAsyncThunk<Order, number, { state: RootState }>(
-  "orders/fetchOrder",
-  async (id, thunkAPI) => {
-    try {
-      return await agent.Orders.getOrder(id);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      thunkAPI.rejectWithValue({ error: error.data });
-    }
-  },
-  {
-    condition: () => !!localStorage.getItem("user"),
-  }
-);
-
-export const ordersSlice = createSlice({
+export const ordersSlice = createSliceWithThunk({
   name: "orders",
   initialState: ordersAdapter.getInitialState<OrdersState>({
     status: "idle",
   }),
-  reducers: {
-    setOrders: (state, action) => {
+  reducers: (create) => ({
+    setOrders: create.reducer((state, action: { payload: Order[] }) => {
       ordersAdapter.setAll(state, action.payload);
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchOrders.pending, (state) => {
-      state.status = "pendingOrders";
-    });
-    builder.addCase(fetchOrders.fulfilled, (state, action) => {
-      ordersAdapter.setAll(state, action.payload);
-      state.status = "idle";
-    });
-    builder.addCase(fetchOrders.rejected, (state) => {
-      state.status = "idle";
-    });
+    }),
 
-    builder.addCase(fetchOrder.pending, (state) => {
-      state.status = "pendingOrder";
-    });
-    builder.addCase(fetchOrder.fulfilled, (state, action) => {
-      ordersAdapter.upsertOne(state, action.payload);
-      state.status = "idle";
-    });
-    builder.addCase(fetchOrder.rejected, (state) => {
-      state.status = "idle";
-    });
-  },
+    fetchOrders: create.asyncThunk(
+      async (_, thunkAPI) => {
+        try {
+          return await agent.Orders.getOrders();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          thunkAPI.rejectWithValue({ error: error.data });
+        }
+      },
+      {
+        pending: (state) => {
+          state.status = "pendingOrders";
+        },
+
+        fulfilled: (state, action) => {
+          ordersAdapter.setAll(state, action.payload);
+          state.status = "idle";
+        },
+
+        rejected: (state) => {
+          state.status = "idle";
+        },
+
+        options: { condition: () => !!localStorage.getItem("user") },
+      }
+    ),
+
+    fetchOrder: create.asyncThunk(
+      async (id, thunkAPI) => {
+        try {
+          return await agent.Orders.getOrder(id);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          thunkAPI.rejectWithValue({ error: error.data });
+        }
+      },
+      {
+        pending: (state) => {
+          state.status = "pendingOrder";
+        },
+
+        fulfilled: (state, action) => {
+          ordersAdapter.upsertOne(state, action.payload);
+          state.status = "idle";
+        },
+
+        rejected: (state) => {
+          state.status = "idle";
+        },
+
+        options: { condition: () => !!localStorage.getItem("user") },
+      }
+    ),
+  }),
 });
 
 export const ordersSelectors = ordersAdapter.getSelectors(
   (state: RootState) => state.orders
 );
 
-export const { setOrders } = ordersSlice.actions;
+export const { fetchOrders, fetchOrder, setOrders } = ordersSlice.actions;
