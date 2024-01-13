@@ -14,7 +14,8 @@ namespace API.DTOs
         [Range(1, double.MaxValue)]
         public long Price { get; set; }
 
-        public IFormFile PictureUrl { get; set; }
+        [Required]
+        public IFormFile PictureFile { get; set; }
 
         [Required]
         public string Type { get; set; }
