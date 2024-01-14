@@ -16,14 +16,32 @@ import useProducts from "../../app/hooks/useProducts";
 import SimplePagination from "../../app/components/SimplePagination";
 import { setProductParams } from "../catalog/catalogSlice";
 import { useAppDispatch } from "../../app/store/configureStore";
+import ProductForm from "./ProductForm";
+import { useState } from "react";
+import { Product } from "../../app/models/product";
 
 export default function Inventory() {
   const { products, paginationDetails } = useProducts();
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
   const dispatch = useAppDispatch();
+
+  function onSelectProduct(product: Product) {
+    setIsEditMode(true);
+    setSelectedProduct(product);
+  }
+
+  function onEditCancel() {
+    setIsEditMode(false);
+    setSelectedProduct(undefined);
+  }
 
   function onPaginationChange(pageNumber: number) {
     dispatch(setProductParams({ pageNumber }));
   }
+
+  if (isEditMode)
+    return <ProductForm product={selectedProduct} onCancel={onEditCancel} />;
 
   return (
     <>
@@ -31,7 +49,12 @@ export default function Inventory() {
         <Typography sx={{ p: 2 }} variant="h4">
           Inventory
         </Typography>
-        <Button sx={{ m: 2 }} size="large" variant="contained">
+        <Button
+          sx={{ m: 2 }}
+          size="large"
+          variant="contained"
+          onClick={() => setIsEditMode(true)}
+        >
           Create
         </Button>
       </Box>
@@ -74,7 +97,10 @@ export default function Inventory() {
                 <TableCell align="center">{product.brand}</TableCell>
                 <TableCell align="center">{product.quantityInStock}</TableCell>
                 <TableCell align="right">
-                  <Button startIcon={<Edit />} />
+                  <Button
+                    startIcon={<Edit />}
+                    onClick={() => onSelectProduct(product)}
+                  />
                   <Button startIcon={<Delete />} color="error" />
                 </TableCell>
               </TableRow>

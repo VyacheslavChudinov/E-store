@@ -1,9 +1,22 @@
 import { Typography, Grid, Paper, Box, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import StoreFormInput from "../../app/components/StoreFormInput";
+import { Product } from "../../app/models/product";
+import { useEffect } from "react";
 
-export default function ProductForm() {
-  const { control } = useForm();
+interface ProductFormProps {
+  product?: Product;
+  onCancel: () => void;
+}
+
+export default function ProductForm({ product, onCancel }: ProductFormProps) {
+  const { control, reset } = useForm();
+
+  useEffect(() => {
+    if (product) {
+      reset(product);
+    }
+  }, [product, reset]);
 
   return (
     <Box component={Paper} sx={{ p: 4 }}>
@@ -42,7 +55,7 @@ export default function ProductForm() {
         </Grid>
       </Grid>
       <Box display="flex" justifyContent="space-between" sx={{ mt: 3 }}>
-        <Button variant="contained" color="inherit">
+        <Button variant="contained" color="inherit" onClick={onCancel}>
           Cancel
         </Button>
         <Button variant="contained" color="success">
