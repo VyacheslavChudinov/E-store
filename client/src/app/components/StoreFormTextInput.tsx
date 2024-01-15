@@ -5,6 +5,7 @@ interface StoreFormTextInputProps extends UseControllerProps {
   label: string;
   rows?: number;
   multiline?: boolean;
+  type?: "text" | "number";
 }
 
 export default function StoreFormTextInput(props: StoreFormTextInputProps) {
