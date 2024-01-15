@@ -28,7 +28,11 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
-          <StoreFormTextInput control={control} name="name" label="Product name" />
+          <StoreFormTextInput
+            control={control}
+            name="name"
+            label="Product name"
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <StoreFormSelectList
@@ -58,13 +62,19 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
         </Grid>
         <Grid item xs={12}>
           <StoreFormTextInput
+            multiline={true}
+            rows={4}
             control={control}
             name="description"
             label="Description"
           />
         </Grid>
         <Grid item xs={12}>
-          <StoreFormTextInput control={control} name="pictureUrl" label="Image" />
+          <StoreFormTextInput
+            control={control}
+            name="pictureUrl"
+            label="Image"
+          />
         </Grid>
       </Grid>
       <Box display="flex" justifyContent="space-between" sx={{ mt: 3 }}>
