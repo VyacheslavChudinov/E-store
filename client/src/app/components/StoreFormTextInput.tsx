@@ -1,11 +1,11 @@
 import { TextField } from "@mui/material";
 import { useController, UseControllerProps } from "react-hook-form";
 
-interface StoreFormInputProps extends UseControllerProps {
+interface StoreFormTextInputProps extends UseControllerProps {
   label: string;
 }
 
-export default function StoreFormInput(props: StoreFormInputProps) {
+export default function StoreFormTextInput(props: StoreFormTextInputProps) {
   const { field, fieldState } = useController({
     ...props,
     defaultValue: "",

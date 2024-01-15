@@ -1,6 +1,6 @@
 import { Typography, Grid, TextField } from "@mui/material";
 import { useFormContext } from "react-hook-form";
-import StoreFormInput from "../../app/components/StoreFormInput";
+import StoreFormTextInput from "../../app/components/StoreFormTextInput";
 import {
   CardCvcElement,
   CardExpiryElement,
@@ -30,7 +30,7 @@ export default function PaymentForm({
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <StoreFormInput
+          <StoreFormTextInput
             label="Name on card"
             name="cardName"
             control={control}
