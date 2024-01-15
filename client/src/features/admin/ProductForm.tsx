@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import useProducts from "../../app/hooks/useProducts";
 import StoreFormSelectList from "../../app/components/StoreFormSelectList";
 import StoreFileDropzone from "../../app/components/StoreFileDropzone";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { productValidationSchema } from "./ProductValidation";
 
 interface ProductFormProps {
   product?: Product;
@@ -13,7 +15,10 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ product, onCancel }: ProductFormProps) {
-  const { control, reset, watch } = useForm();
+  const { control, reset, watch, handleSubmit } = useForm({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver<any>(productValidationSchema),
+  });
   const { brands, types } = useProducts();
   const watchFile = watch("pictureFile", null);
 
@@ -23,12 +28,14 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
     }
   }, [product, reset]);
 
+  function onFormSubmit() {}
+
   return (
     <Box component={Paper} sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
         Product Details
       </Typography>
-      <form>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12}>
             <StoreFormTextInput
