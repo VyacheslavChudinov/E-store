@@ -5,6 +5,7 @@ import { Product } from "../../app/models/product";
 import { useEffect } from "react";
 import useProducts from "../../app/hooks/useProducts";
 import StoreFormSelectList from "../../app/components/StoreFormSelectList";
+import StoreFileDropzone from "../../app/components/StoreFileDropzone";
 
 interface ProductFormProps {
   product?: Product;
@@ -12,8 +13,9 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ product, onCancel }: ProductFormProps) {
-  const { control, reset } = useForm();
+  const { control, reset, watch } = useForm();
   const { brands, types } = useProducts();
+  const watchFile = watch("pictureFile", null);
 
   useEffect(() => {
     if (product) {
@@ -26,71 +28,91 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
         Product Details
       </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={12}>
-          <StoreFormTextInput
-            control={control}
-            name="name"
-            label="Product name"
-          />
+      <form>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12}>
+            <StoreFormTextInput
+              control={control}
+              name="name"
+              label="Product name"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <StoreFormSelectList
+              control={control}
+              items={brands}
+              name="brand"
+              label="Brand"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <StoreFormSelectList
+              control={control}
+              items={types}
+              name="type"
+              label="Type"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <StoreFormTextInput
+              control={control}
+              name="price"
+              label="Price"
+              type="number"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <StoreFormTextInput
+              control={control}
+              name="quantityInStock"
+              label="Quantity in Stock"
+              type="number"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <StoreFormTextInput
+              multiline={true}
+              rows={4}
+              control={control}
+              name="description"
+              label="Description"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              display={"flex"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <StoreFileDropzone control={control} name="pictureFile" />
+              {!!watchFile && (
+                <img
+                  src={watchFile.preview}
+                  alt="preview"
+                  style={{ maxHeight: 200 }}
+                ></img>
+              )}
+
+              {!watchFile && (
+                <img
+                  src={product?.pictureUrl}
+                  alt={product?.name}
+                  style={{ maxHeight: 200 }}
+                ></img>
+              )}
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <StoreFormSelectList
-            control={control}
-            items={brands}
-            name="brand"
-            label="Brand"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <StoreFormSelectList
-            control={control}
-            items={types}
-            name="type"
-            label="Type"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <StoreFormTextInput
-            control={control}
-            name="price"
-            label="Price"
-            type="number"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <StoreFormTextInput
-            control={control}
-            name="quantityInStock"
-            label="Quantity in Stock"
-            type="number"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <StoreFormTextInput
-            multiline={true}
-            rows={4}
-            control={control}
-            name="description"
-            label="Description"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <StoreFormTextInput
-            control={control}
-            name="pictureUrl"
-            label="Image"
-          />
-        </Grid>
-      </Grid>
-      <Box display="flex" justifyContent="space-between" sx={{ mt: 3 }}>
-        <Button variant="contained" color="inherit" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button variant="contained" color="success">
-          Submit
-        </Button>
-      </Box>
+
+        <Box display="flex" justifyContent="space-between" sx={{ mt: 3 }}>
+          <Button variant="contained" color="inherit" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button variant="contained" color="success" type="submit">
+            Submit
+          </Button>
+        </Box>
+      </form>
     </Box>
   );
 }
