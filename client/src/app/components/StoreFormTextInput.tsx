@@ -3,6 +3,8 @@ import { useController, UseControllerProps } from "react-hook-form";
 
 interface StoreFormTextInputProps extends UseControllerProps {
   label: string;
+  rows?: number;
+  multiline?: boolean;
 }
 
 export default function StoreFormTextInput(props: StoreFormTextInputProps) {
