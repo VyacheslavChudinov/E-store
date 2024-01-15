@@ -51,13 +51,19 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <StoreFormTextInput control={control} name="price" label="Price" />
+          <StoreFormTextInput
+            control={control}
+            name="price"
+            label="Price"
+            type="number"
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <StoreFormTextInput
             control={control}
             name="quantityInStock"
             label="Quantity in Stock"
+            type="number"
           />
         </Grid>
         <Grid item xs={12}>
