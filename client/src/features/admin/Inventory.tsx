@@ -13,7 +13,7 @@ import {
 import { Edit, Delete } from "@mui/icons-material";
 import { formatPrice } from "../../app/utils/format";
 import useProducts from "../../app/hooks/useProducts";
-import SimplePagination from "../../app/components/SimplePagination";
+import StorePagination from "../../app/components/StorePagination";
 import { setProductParams } from "../catalog/catalogSlice";
 import { useAppDispatch } from "../../app/store/configureStore";
 import ProductForm from "./ProductForm";
@@ -110,7 +110,7 @@ export default function Inventory() {
       </TableContainer>
       {!!paginationDetails && (
         <Box sx={{ pt: 2 }}>
-          <SimplePagination
+          <StorePagination
             paginationDetails={paginationDetails}
             onChange={onPaginationChange}
           />

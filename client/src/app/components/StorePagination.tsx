@@ -2,15 +2,15 @@ import { Box, Pagination, Typography } from "@mui/material";
 import { PaginationDetails } from "../models/pagination";
 import { useState } from "react";
 
-interface SimplePaginationProps {
+interface StorePaginationProps {
   paginationDetails: PaginationDetails;
   onChange: (pageNumber: number) => void;
 }
 
-function SimplePagination({
+function StorePagination({
   paginationDetails,
   onChange,
-}: SimplePaginationProps) {
+}: StorePaginationProps) {
   const { currentPage, pageSize, totalPages, totalCount } = paginationDetails;
   const [currentPageNumber, setCurrentPageNumber] = useState(currentPage);
   const firstItemNumber = (currentPage - 1) * pageSize + 1;
@@ -42,4 +42,4 @@ function SimplePagination({
   );
 }
 
-export default SimplePagination;
+export default StorePagination;

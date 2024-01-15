@@ -7,7 +7,7 @@ import { Grid, Paper } from "@mui/material";
 import ProductSearch from "./ProductSearch";
 import RadioButtonGroup from "../../app/components/RadioButtonGroup";
 import CheckboxGroup from "../../app/components/CheckboxGroup";
-import SimplePagination from "../../app/components/SimplePagination";
+import StorePagination from "../../app/components/StorePagination";
 import useProducts from "../../app/hooks/useProducts";
 
 const sortOptions = [
@@ -82,7 +82,7 @@ export default function Catalog() {
       <Grid item xs={3}></Grid>
       <Grid item xs={9}>
         {!!paginationDetails && !!products.length && (
-          <SimplePagination
+          <StorePagination
             onChange={onPaginationChange}
             paginationDetails={paginationDetails}
           />
