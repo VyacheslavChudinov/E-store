@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import StoreFormTextInput from "../../app/components/StoreFormTextInput";
 import { Product } from "../../app/models/product";
 import { useEffect } from "react";
+import useProducts from "../../app/hooks/useProducts";
+import StoreFormSelectList from "../../app/components/StoreFormSelectList";
 
 interface ProductFormProps {
   product?: Product;
@@ -11,6 +13,7 @@ interface ProductFormProps {
 
 export default function ProductForm({ product, onCancel }: ProductFormProps) {
   const { control, reset } = useForm();
+  const { brands, types } = useProducts();
 
   useEffect(() => {
     if (product) {
@@ -28,10 +31,20 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
           <StoreFormTextInput control={control} name="name" label="Product name" />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <StoreFormInput control={control} name="brand" label="Brand" />
+          <StoreFormSelectList
+            control={control}
+            items={brands}
+            name="brand"
+            label="Brand"
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <StoreFormInput control={control} name="type" label="Type" />
+          <StoreFormSelectList
+            control={control}
+            items={types}
+            name="type"
+            label="Type"
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <StoreFormTextInput control={control} name="price" label="Price" />
