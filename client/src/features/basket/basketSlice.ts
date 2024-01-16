@@ -60,7 +60,13 @@ export const basketSlice = createSliceWithThunk({
       }
     ),
 
-    addBasketItemAsync: create.asyncThunk(
+    addBasketItemAsync: create.asyncThunk<
+      {
+        productId: number;
+        quantity: number;
+      },
+      Basket
+    >(
       async ({ productId, quantity = 1 }, thunkAPI) => {
         try {
           return await agent.Basket.addItem(productId, quantity);
@@ -93,8 +99,11 @@ export const basketSlice = createSliceWithThunk({
       }
     ),
 
-    removeBasketItemAsync: create.asyncThunk(
-      async ({ productId, quantity }, thunkAPI) => {
+    removeBasketItemAsync: create.asyncThunk<{
+      productId: number;
+      quantity?: number;
+    }>(
+      async ({ productId, quantity = 1 }, thunkAPI) => {
         try {
           await agent.Basket.remove(productId, quantity);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,7 +118,7 @@ export const basketSlice = createSliceWithThunk({
         },
 
         fulfilled: (state, action) => {
-          const { productId, quantity } = action.meta.arg;
+          const { productId, quantity = 1 } = action.meta.arg;
 
           if (!state.basket) {
             return;

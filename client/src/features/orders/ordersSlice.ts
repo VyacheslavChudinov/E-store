@@ -27,7 +27,7 @@ export const ordersSlice = createSliceWithThunk({
       ordersAdapter.setAll(state, action.payload);
     }),
 
-    fetchOrders: create.asyncThunk(
+    fetchOrders: create.asyncThunk<void, Order[]>(
       async (_, thunkAPI) => {
         try {
           return await agent.Orders.getOrders();
@@ -54,7 +54,7 @@ export const ordersSlice = createSliceWithThunk({
       }
     ),
 
-    fetchOrder: create.asyncThunk(
+    fetchOrder: create.asyncThunk<number, Order>(
       async (id, thunkAPI) => {
         try {
           return await agent.Orders.getOrder(id);

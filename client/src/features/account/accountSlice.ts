@@ -4,7 +4,7 @@ import {
   buildCreateSlice,
 } from "@reduxjs/toolkit";
 import { User } from "../../app/models/user";
-import agent from "../../app/api/agent";
+import agent, { LoginPayload } from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
 import { setBasket } from "../basket/basketSlice";
@@ -35,8 +35,8 @@ export const accountSlice = createSliceWithThunk({
       router.navigate("/");
     }),
 
-    login: create.asyncThunk(
-      async (loginPayload, thunkAPI) => {
+    login: create.asyncThunk<LoginPayload, User>(
+      async (loginPayload: LoginPayload, thunkAPI) => {
         try {
           const { basket, ...user } = await agent.Account.login(loginPayload);
           if (basket) {
