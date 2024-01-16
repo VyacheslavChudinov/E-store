@@ -17,3 +17,10 @@ export interface ProductParams {
   pageNumber: number;
   pageSize: number;
 }
+
+export interface CreateProductPayload extends Omit<Product, "id"> {
+  pictureFile: Blob;
+}
+export interface UpdateProductPayload extends Product {
+  pictureFile?: Blob;
+}

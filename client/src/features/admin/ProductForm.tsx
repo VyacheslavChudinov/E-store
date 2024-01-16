@@ -1,13 +1,23 @@
 import { Typography, Grid, Paper, Box, Button } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import StoreFormTextInput from "../../app/components/StoreFormTextInput";
-import { Product } from "../../app/models/product";
+import {
+  CreateProductPayload,
+  Product,
+  UpdateProductPayload,
+} from "../../app/models/product";
 import { useEffect } from "react";
 import useProducts from "../../app/hooks/useProducts";
 import StoreFormSelectList from "../../app/components/StoreFormSelectList";
 import StoreFileDropzone from "../../app/components/StoreFileDropzone";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productValidationSchema } from "./ProductValidation";
+import { useAppDispatch } from "../../app/store/configureStore";
+import {
+  createProductAsync,
+  updateProductAsync,
+} from "../catalog/catalogSlice";
+import { LoadingButton } from "@mui/lab";
 
 interface ProductFormProps {
   product?: Product;
@@ -15,20 +25,39 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ product, onCancel }: ProductFormProps) {
-  const { control, reset, watch, handleSubmit } = useForm({
+  const {
+    control,
+    reset,
+    watch,
+    handleSubmit,
+    formState: { isDirty, isSubmitting },
+  } = useForm({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: yupResolver<any>(productValidationSchema),
   });
+  const dispatch = useAppDispatch();
   const { brands, types } = useProducts();
   const watchFile = watch("pictureFile", null);
 
   useEffect(() => {
-    if (product) {
+    if (product && !watchFile && !isDirty) {
       reset(product);
     }
-  }, [product, reset]);
 
-  function onFormSubmit() {}
+    return () => {
+      if (watchFile) URL.revokeObjectURL(watchFile.preview);
+    };
+  }, [isDirty, product, reset, watchFile]);
+
+  async function onFormSubmit(data: FieldValues) {
+    if (product) {
+      await dispatch(updateProductAsync(data as UpdateProductPayload));
+    } else {
+      await dispatch(createProductAsync(data as CreateProductPayload));
+    }
+
+    onCancel();
+  }
 
   return (
     <Box component={Paper} sx={{ p: 4 }}>
@@ -115,9 +144,14 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
           <Button variant="contained" color="inherit" onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant="contained" color="success" type="submit">
+          <LoadingButton
+            variant="contained"
+            color="success"
+            type="submit"
+            loading={isSubmitting}
+          >
             Submit
-          </Button>
+          </LoadingButton>
         </Box>
       </form>
     </Box>

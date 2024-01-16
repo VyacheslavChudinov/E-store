@@ -4,10 +4,16 @@ import {
   buildCreateSlice,
   createEntityAdapter,
 } from "@reduxjs/toolkit";
-import { Product, ProductParams } from "../../app/models/product";
-import agent from "../../app/api/agent";
+import {
+  CreateProductPayload,
+  Product,
+  ProductParams,
+  UpdateProductPayload,
+} from "../../app/models/product";
 import { RootState } from "../../app/store/configureStore";
 import { PaginationDetails } from "../../app/models/pagination";
+import { AxiosResponse } from "axios";
+import agent from "../../app/api/agent";
 
 const productsAdapter = createEntityAdapter<Product>();
 
@@ -67,12 +73,21 @@ export const catalogSlice = createSliceWithThunk({
     paginationDetails: null,
   }),
   reducers: (create) => ({
+    setProduct: create.reducer((state, action: PayloadAction<Product>) => {
+      state = productsAdapter.upsertOne(state, action.payload);
+    }),
+
+    deleteProduct: create.reducer((state, action: PayloadAction<number>) => {
+      state = productsAdapter.removeOne(state, action.payload);
+    }),
+
     setProductParams: create.reducer(
       (state, action: PayloadAction<Partial<ProductParams>>) => {
         state.productsLoaded = false;
         state.productParams = { ...state.productParams, ...action.payload };
       }
     ),
+
     setPaginationDetails: create.reducer(
       (state, action: PayloadAction<PaginationDetails>) => {
         state.paginationDetails = {
@@ -147,7 +162,7 @@ export const catalogSlice = createSliceWithThunk({
       }
     ),
 
-    fetchProductAsync: create.asyncThunk(
+    fetchProductAsync: create.asyncThunk<number, Product>(
       async (productId: number, thunkAPI) => {
         try {
           return await agent.Catalog.getProduct(productId);
@@ -170,6 +185,79 @@ export const catalogSlice = createSliceWithThunk({
         },
       }
     ),
+    updateProductAsync: create.asyncThunk<UpdateProductPayload, Product>(
+      async (payload: UpdateProductPayload, thunkAPI) => {
+        try {
+          return await agent.Admin.updateProduct(payload);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          return thunkAPI.rejectWithValue(error.data);
+        }
+      },
+      {
+        pending: (state) => {
+          state.status = "pendingUpdateProduct";
+        },
+        fulfilled: (state, action) => {
+          productsAdapter.upsertOne(state, action.payload);
+
+          state.status = "idle";
+        },
+        rejected: (state, action) => {
+          console.log(action);
+          state.status = "idle";
+        },
+      }
+    ),
+
+    createProductAsync: create.asyncThunk<CreateProductPayload, Product>(
+      async (payload: CreateProductPayload, thunkAPI) => {
+        try {
+          return await agent.Admin.createProduct(payload);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          return thunkAPI.rejectWithValue(error.data);
+        }
+      },
+      {
+        pending: (state) => {
+          state.status = "pendingCreateProduct";
+        },
+        fulfilled: (state) => {
+          state.productsLoaded = false;
+          state.filtersLoaded = false;
+          state.status = "idle";
+        },
+        rejected: (state, action) => {
+          console.log(action);
+          state.status = "idle";
+        },
+      }
+    ),
+    deleteProductAsync: create.asyncThunk<number, AxiosResponse>(
+      async (id: number, thunkAPI) => {
+        try {
+          return await agent.Admin.deleteProduct(id);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          return thunkAPI.rejectWithValue(error.data);
+        }
+      },
+      {
+        pending: (state) => {
+          state.status = "pendingDeleteProduct";
+        },
+        fulfilled: (state) => {
+          state.productsLoaded = false;
+          state.filtersLoaded = false;
+          state.status = "idle";
+        },
+        rejected: (state, action) => {
+          console.log(action);
+          state.status = "idle";
+        },
+      }
+    ),
   }),
 });
 
@@ -181,6 +269,11 @@ export const {
   fetchFilters,
   fetchProductsAsync,
   fetchProductAsync,
+  updateProductAsync,
+  createProductAsync,
+  deleteProductAsync,
+  deleteProduct,
+  setProduct,
   setProductParams,
   resetProductParams,
   setPaginationDetails,

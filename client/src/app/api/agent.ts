@@ -87,17 +87,21 @@ const requests = {
   put: (url: string, body: object) => axios.put(url, body).then(getResponse),
   delete: (url: string) => axios.delete(url),
   postForm: (url: string, data: FormData) =>
-    axios.postForm(url, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }),
+    axios
+      .postForm(url, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(getResponse),
   putForm: (url: string, data: FormData) =>
-    axios.putForm(url, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }),
+    axios
+      .putForm(url, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(getResponse),
 };
 
 const mapToFormData = (data: object) => {

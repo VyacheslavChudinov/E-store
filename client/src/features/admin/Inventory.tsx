@@ -14,21 +14,34 @@ import { Edit, Delete } from "@mui/icons-material";
 import { formatPrice } from "../../app/utils/format";
 import useProducts from "../../app/hooks/useProducts";
 import StorePagination from "../../app/components/StorePagination";
-import { setProductParams } from "../catalog/catalogSlice";
+import { deleteProductAsync, setProductParams } from "../catalog/catalogSlice";
 import { useAppDispatch } from "../../app/store/configureStore";
 import ProductForm from "./ProductForm";
 import { useState } from "react";
 import { Product } from "../../app/models/product";
+import { LoadingButton } from "@mui/lab";
 
 export default function Inventory() {
   const { products, paginationDetails } = useProducts();
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
+  const [loadingProductId, setLoadingProductId] = useState(0);
   const dispatch = useAppDispatch();
 
   function onSelectProduct(product: Product) {
     setIsEditMode(true);
     setSelectedProduct(product);
+  }
+
+  async function onDeleteProduct(id: number) {
+    try {
+      setLoadingProductId(id);
+      await dispatch(deleteProductAsync(id));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingProductId(0);
+    }
   }
 
   function onEditCancel() {
@@ -97,11 +110,17 @@ export default function Inventory() {
                 <TableCell align="center">{product.brand}</TableCell>
                 <TableCell align="center">{product.quantityInStock}</TableCell>
                 <TableCell align="right">
-                  <Button
+                  <LoadingButton
                     startIcon={<Edit />}
                     onClick={() => onSelectProduct(product)}
+                    loading={loadingProductId === product.id}
                   />
-                  <Button startIcon={<Delete />} color="error" />
+                  <LoadingButton
+                    startIcon={<Delete />}
+                    color="error"
+                    onClick={async () => await onDeleteProduct(product.id)}
+                    loading={loadingProductId === product.id}
+                  />
                 </TableCell>
               </TableRow>
             ))}

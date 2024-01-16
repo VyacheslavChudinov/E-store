@@ -3,6 +3,7 @@ import { FormControl, FormHelperText, Typography } from "@mui/material";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { UseControllerProps, useController } from "react-hook-form";
+import { object } from "yup";
 
 interface StoreFileDropzoneProps extends UseControllerProps {}
 
@@ -11,10 +12,9 @@ export default function StoreFileDropzone(props: StoreFileDropzoneProps) {
 
   const onDrop = useCallback(
     (acceptedFiles: object[]) => {
-      acceptedFiles[0] = {
-        ...acceptedFiles[0],
+      acceptedFiles[0] = Object.assign(acceptedFiles[0], {
         preview: URL.createObjectURL(acceptedFiles[0] as Blob),
-      };
+      });
 
       field.onChange(acceptedFiles[0]);
     },
