@@ -4,6 +4,7 @@ import ProductCard from "../catalog/ProductCard";
 import Loading from "../../app/layouts/Loading";
 import { ArrowCircleLeft, ArrowCircleRight } from "@mui/icons-material";
 import useProducts from "../../app/hooks/useProducts";
+import SliderArrowWrapper from "../../app/components/SliderArrowWrapper";
 
 export default function Home() {
   const { products, productsLoaded } = useProducts();
@@ -17,18 +18,22 @@ export default function Home() {
     autoplay: true,
     autoplaySpeed: 5000,
     prevArrow: (
-      <ArrowCircleLeft
-        color="info"
-        fontSize="large"
-        sx={{ ":hover": { color: "sienna" } }}
-      />
+      <SliderArrowWrapper>
+        <ArrowCircleLeft
+          color="info"
+          fontSize="large"
+          sx={{ ":hover": { color: "sienna" } }}
+        />
+      </SliderArrowWrapper>
     ),
     nextArrow: (
-      <ArrowCircleRight
-        color="info"
-        fontSize="large"
-        sx={{ ":hover": { color: "sienna" } }}
-      />
+      <SliderArrowWrapper>
+        <ArrowCircleRight
+          color="info"
+          fontSize="large"
+          sx={{ ":hover": { color: "sienna" } }}
+        />
+      </SliderArrowWrapper>
     ),
   };
 
