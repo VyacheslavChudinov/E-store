@@ -50,8 +50,8 @@ export default function Home() {
         <Slider {...settings}>
           {products.map((product) => {
             return (
-              <Box p={"20px"}>
-                <ProductCard product={product} key={product.id} />
+              <Box p={"20px"} key={product.id}>
+                <ProductCard product={product} />
               </Box>
             );
           })}
