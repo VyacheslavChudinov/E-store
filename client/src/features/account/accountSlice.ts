@@ -8,6 +8,8 @@ import agent, { LoginPayload } from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
 import { setBasket } from "../basket/basketSlice";
+import getRolesFromJWT from "../../app/utils/jwt";
+
 export interface AccountState {
   user: User | null;
   status: string;
@@ -52,7 +54,11 @@ export const accountSlice = createSliceWithThunk({
       },
       {
         fulfilled: (state, action) => {
-          state.user = action.payload;
+          const roles = getRolesFromJWT(action.payload.token);
+          state.user = {
+            ...action.payload,
+            roles,
+          };
           state.status = "idle";
           router.navigate("/");
         },
@@ -82,7 +88,11 @@ export const accountSlice = createSliceWithThunk({
       },
       {
         fulfilled: (state, action) => {
-          state.user = action.payload;
+          const roles = getRolesFromJWT(action.payload.token);
+          state.user = {
+            ...action.payload,
+            roles,
+          };
           state.status = "idle";
         },
         rejected: (state) => {
