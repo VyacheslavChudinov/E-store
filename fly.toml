@@ -12,7 +12,9 @@ primary_region = "arn"
 [env]
   ASPNETCORE_URLS="http://+:8080"
   StripeSettings__PublishableKey="pk_test_51OTOzPLyhi5imVwxYy2fbVHRkC8R58TeGbr3nln9YI4Pi7jt2mTLY57vffmDNNbCwLcEGcpPsRsvOvs63rmWoBkU00SdcpJ5kG"
-  
+  Cloudinary__CloudName="da4kwmijv"
+  Cloudinary__ApiKey="617986955354724"
+
 [http_service]
   internal_port = 8080
   force_https = true
