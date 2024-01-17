@@ -8,7 +8,7 @@ import agent, { LoginPayload } from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
 import { setBasket } from "../basket/basketSlice";
-import getRolesFromJWT from "../../app/utils/jwt";
+import { getRolesFromJWT } from "../../app/utils/user";
 
 export interface AccountState {
   user: User | null;

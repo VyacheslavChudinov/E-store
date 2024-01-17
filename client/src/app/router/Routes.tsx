@@ -16,6 +16,7 @@ import Orders from "../../features/orders/Orders";
 import OrderDetails from "../../features/orders/OrderDetails";
 import CheckoutContainer from "../../features/checkout/CheckoutContainer";
 import Inventory from "../../features/admin/Inventory";
+import { UserRoles } from "../models/user";
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,11 @@ export const router = createBrowserRouter([
             path: "/orders/:id",
             element: <OrderDetails />,
           },
+        ],
+      },
+      {
+        element: <RequireAuth roles={[UserRoles.admin]} />,
+        children: [
           {
             path: "/inventory",
             element: <Inventory />,

@@ -13,6 +13,7 @@ import {
 import { Link, NavLink } from "react-router-dom";
 import { useAppSelector } from "../store/configureStore";
 import AccountMenu from "./AccountMenu";
+import { isAdmin } from "../utils/user";
 
 interface Props {
   darkMode: boolean;
@@ -77,7 +78,7 @@ export default function Header({ darkMode, setDarkMode }: Props) {
               <Typography>{title.toUpperCase()}</Typography>
             </ListItem>
           ))}
-          {!!user && (
+          {isAdmin(user) && (
             <ListItem component={NavLink} to={"/inventory"} sx={navLinksStyle}>
               <Typography>INVENTORY</Typography>
             </ListItem>
