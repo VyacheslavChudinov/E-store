@@ -17,7 +17,7 @@ import { fetchCurrentUser } from "../../features/account/accountSlice.ts";
 function App() {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const paletteType = darkMode ? "dark" : "light";
   const theme = createTheme({
     palette: {
