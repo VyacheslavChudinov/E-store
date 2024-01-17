@@ -63,7 +63,7 @@ export const basketSlice = createSliceWithThunk({
     addBasketItemAsync: create.asyncThunk<
       {
         productId: number;
-        quantity: number;
+        quantity?: number;
       },
       Basket
     >(

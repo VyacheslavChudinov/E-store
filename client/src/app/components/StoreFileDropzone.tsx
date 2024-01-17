@@ -3,7 +3,6 @@ import { FormControl, FormHelperText, Typography } from "@mui/material";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { UseControllerProps, useController } from "react-hook-form";
-import { object } from "yup";
 
 interface StoreFileDropzoneProps extends UseControllerProps {}
 
