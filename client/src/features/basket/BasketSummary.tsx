@@ -9,7 +9,7 @@ import {
 import { formatPrice } from "../../app/utils/format";
 import { BasketItem } from "../../app/models/basket";
 
-export interface BasketSummaryProps {
+interface BasketSummaryProps {
   items: BasketItem[];
 }
 

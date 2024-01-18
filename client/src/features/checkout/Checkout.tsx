@@ -28,17 +28,17 @@ import {
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
-export interface CardComplete {
+interface CardComplete {
   cardNumber: boolean;
   cardExpiry: boolean;
   cardCvc: boolean;
 }
 
-export interface CardState {
+interface CardState {
   elementError: { [key in StripeElementType]?: string };
 }
 
-export interface StripeInputEvent {
+interface StripeInputEvent {
   complete: boolean;
   error: { message: string };
   elementType: string;
