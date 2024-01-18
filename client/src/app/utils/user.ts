@@ -15,6 +15,10 @@ export function hasRoles(
   roles: UserRoles[] | null | undefined = [],
   matchAll: boolean = false
 ) {
+  if (!roles?.length) {
+    return true;
+  }
+
   const matchFunc = matchAll ? Array.prototype.every : Array.prototype.some;
   const predicate = (role: string) =>
     !!user?.roles?.find?.(
