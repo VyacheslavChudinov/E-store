@@ -1,23 +1,29 @@
+import { Suspense, lazy } from "react";
 import { Navigate, createBrowserRouter } from "react-router-dom";
-import Home from "../../features/home/Home";
-import ProductDetails from "../../features/catalog/ProductDetails";
-import Contact from "../../features/contact/Contact";
-import About from "../../features/about/About";
-import App from "../layouts/App";
-import Catalog from "../../features/catalog/Catalog";
-import Errors from "../../features/errors/Errors";
-import ServerError from "../../features/errors/ServerError";
-import { NotFound } from "../../features/errors/NotFound";
-import Basket from "../../features/basket/Basket";
-import Login from "../../features/account/Login";
-import Register from "../../features/account/Register";
-import RequireAuth from "./RequireAuth";
-import Orders from "../../features/orders/Orders";
-import OrderDetails from "../../features/orders/OrderDetails";
-import CheckoutContainer from "../../features/checkout/CheckoutContainer";
-import Inventory from "../../features/admin/Inventory";
 import { UserRoles } from "../models/user";
+import App from "../layouts/App";
+import RequireAuth from "./RequireAuth";
+import Loading from "../layouts/Loading";
 
+const Basket = lazy(() => import("../../features/basket/Basket"));
+const Home = lazy(() => import("../../features/home/Home"));
+const Inventory = lazy(() => import("../../features/admin/Inventory"));
+const Contact = lazy(() => import("../../features/contact/Contact"));
+const About = lazy(() => import("../../features/about/About"));
+const Catalog = lazy(() => import("../../features/catalog/Catalog"));
+const Errors = lazy(() => import("../../features/errors/Errors"));
+const ServerError = lazy(() => import("../../features/errors/ServerError"));
+const NotFound = lazy(() => import("../../features/errors/NotFound"));
+const Login = lazy(() => import("../../features/account/Login"));
+const Register = lazy(() => import("../../features/account/Register"));
+const Orders = lazy(() => import("../../features/orders/Orders"));
+const OrderDetails = lazy(() => import("../../features/orders/OrderDetails"));
+const CheckoutContainer = lazy(
+  () => import("../../features/checkout/CheckoutContainer")
+);
+const ProductDetails = lazy(
+  () => import("../../features/catalog/ProductDetails")
+);
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -28,15 +34,27 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/checkout",
-            element: <CheckoutContainer />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <CheckoutContainer />
+              </Suspense>
+            ),
           },
           {
             path: "/orders",
-            element: <Orders />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Orders />
+              </Suspense>
+            ),
           },
           {
             path: "/orders/:id",
-            element: <OrderDetails />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <OrderDetails />
+              </Suspense>
+            ),
           },
         ],
       },
@@ -45,56 +63,104 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/inventory",
-            element: <Inventory />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Inventory />
+              </Suspense>
+            ),
           },
         ],
       },
       {
         path: "",
-        element: <Home />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Home />
+          </Suspense>
+        ),
       },
       {
         path: "/catalog/:id",
-        element: <ProductDetails />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ProductDetails />
+          </Suspense>
+        ),
       },
       {
         path: "/catalog",
-        element: <Catalog />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Catalog />
+          </Suspense>
+        ),
       },
 
       {
         path: "/contact",
-        element: <Contact />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Contact />
+          </Suspense>
+        ),
       },
       {
         path: "/about",
-        element: <About />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <About />
+          </Suspense>
+        ),
       },
       import.meta.env.DEV
         ? {
             path: "/errors",
-            element: <Errors />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Errors />
+              </Suspense>
+            ),
           }
         : {},
       {
         path: "/server-error",
-        element: <ServerError />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ServerError />
+          </Suspense>
+        ),
       },
       {
         path: "/not-found",
-        element: <NotFound />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <NotFound />
+          </Suspense>
+        ),
       },
       {
         path: "/basket",
-        element: <Basket />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Basket />
+          </Suspense>
+        ),
       },
       {
         path: "/login",
-        element: <Login />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Login />
+          </Suspense>
+        ),
       },
       {
         path: "/register",
-        element: <Register />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Register />
+          </Suspense>
+        ),
       },
       {
         path: "*",
