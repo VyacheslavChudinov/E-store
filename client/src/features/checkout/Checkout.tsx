@@ -19,30 +19,14 @@ import { ShippingAddress } from "../../app/models/order";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { clearBasket } from "../basket/basketSlice";
 import { LoadingButton } from "@mui/lab";
-import { StripeElementType } from "@stripe/stripe-js";
 import {
   CardNumberElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import { CardState, CardComplete, StripeInputEvent } from "./checkoutTypes";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
-
-interface CardComplete {
-  cardNumber: boolean;
-  cardExpiry: boolean;
-  cardCvc: boolean;
-}
-
-interface CardState {
-  elementError: { [key in StripeElementType]?: string };
-}
-
-interface StripeInputEvent {
-  complete: boolean;
-  error: { message: string };
-  elementType: string;
-}
 
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);

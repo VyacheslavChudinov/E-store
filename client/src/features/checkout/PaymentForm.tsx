@@ -7,8 +7,8 @@ import {
   CardNumberElement,
 } from "@stripe/react-stripe-js";
 import { StripeInput } from "./StripeInput";
-import { CardState, StripeInputEvent } from "./Checkout";
 import { ChangeEvent } from "react";
+import { StripeInputEvent, CardState } from "./checkoutTypes";
 
 interface PaymentFormProps {
   onCardInputChange: (
