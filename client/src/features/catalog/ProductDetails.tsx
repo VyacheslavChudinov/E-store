@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { NotFound } from "../errors/NotFound";
+import NotFound from "../errors/NotFound";
 import Loading from "../../app/layouts/Loading";
 import { LoadingButton } from "@mui/lab";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
