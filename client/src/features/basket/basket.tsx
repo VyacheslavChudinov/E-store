@@ -1,19 +1,16 @@
 import { Basket } from "../../app/models/basket";
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import BasketSummary from "./BasketSummary";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/store/configureStore";
 import { BasketTable } from "./BasketTable";
 
 export default function Basket() {
-  const { basket } = useAppSelector((state) => state.basket);
-
-  if (!basket)
-    return <Typography variant="h3">Your basket is empty</Typography>;
+  const { basket, updatingProducts } = useAppSelector((state) => state.basket);
 
   return (
     <>
-      <BasketTable isBasket={true} items={basket.items} />
+      <BasketTable isBasket={true} items={basket?.items ?? []} />
 
       <Grid container>
         <Grid item xs={6}></Grid>
@@ -25,6 +22,7 @@ export default function Basket() {
             variant="contained"
             size="large"
             fullWidth
+            disabled={!!updatingProducts?.length}
           >
             Checkout
           </Button>

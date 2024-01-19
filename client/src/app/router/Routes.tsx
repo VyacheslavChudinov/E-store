@@ -4,6 +4,7 @@ import { UserRoles } from "../models/user";
 import App from "../layouts/App";
 import RequireAuth from "./RequireAuth";
 import Loading from "../layouts/Loading";
+import RequireBasket from "./RequireBasket";
 
 const Basket = lazy(() => import("../../features/basket/Basket"));
 const Home = lazy(() => import("../../features/home/Home"));
@@ -34,11 +35,18 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/checkout",
-            element: (
-              <Suspense fallback={<Loading />}>
-                <CheckoutContainer />
-              </Suspense>
-            ),
+            element: <RequireBasket />,
+
+            children: [
+              {
+                path: "/checkout",
+                element: (
+                  <Suspense fallback={<Loading />}>
+                    <CheckoutContainer />
+                  </Suspense>
+                ),
+              },
+            ],
           },
           {
             path: "/orders",
@@ -140,11 +148,18 @@ export const router = createBrowserRouter([
       },
       {
         path: "/basket",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Basket />
-          </Suspense>
-        ),
+        element: <RequireBasket />,
+
+        children: [
+          {
+            path: "/basket",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Basket />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "/login",
