@@ -30,7 +30,6 @@ const steps = ["Shipping address", "Review your order", "Payment details"];
 
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
-  const currentValidationSchema = validationSchema[activeStep];
   const [orderNumber, setOrderNumber] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
@@ -47,16 +46,14 @@ export default function CheckoutPage() {
   const stripe = useStripe();
   const elements = useElements();
 
+  const currentValidationSchema = validationSchema[activeStep];
   const methods = useForm({
-    mode: "onTouched",
+    mode: "all",
     resolver: yupResolver(currentValidationSchema),
   });
 
   const isValidPayment =
-    activeStep !== steps.length - 1 ||
-    (cardComplete.cardNumber &&
-      cardComplete.cardExpiry &&
-      cardComplete.cardCvc);
+    cardComplete.cardNumber && cardComplete.cardExpiry && cardComplete.cardCvc;
 
   function onCardInputChange(
     event: ChangeEvent<HTMLInputElement> & StripeInputEvent
@@ -71,24 +68,6 @@ export default function CheckoutPage() {
     }));
 
     setCardComplete((prev) => ({ ...prev, [elementType]: isComplete }));
-  }
-
-  function getStepContent(step: number) {
-    switch (step) {
-      case 0:
-        return <AddressForm />;
-      case 1:
-        return <Review />;
-      case 2:
-        return (
-          <PaymentForm
-            onCardInputChange={onCardInputChange}
-            cardState={cardState}
-          />
-        );
-      default:
-        throw new Error("Unknown step");
-    }
   }
 
   const submitOrder = async (data: FieldValues) => {
@@ -136,12 +115,8 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleNext = async (data: FieldValues) => {
-    if (activeStep == steps.length - 1) {
-      await submitOrder(data);
-    } else {
-      setActiveStep(activeStep + 1);
-    }
+  const handleNext = () => {
+    setActiveStep(activeStep + 1);
   };
 
   const handleBack = () => {
@@ -176,35 +151,60 @@ export default function CheckoutPage() {
             </Step>
           ))}
         </Stepper>
-        <>
-          {activeStep === steps.length ? (
-            <>
-              <Typography variant="h5" gutterBottom>
-                {paymentMessage}
-              </Typography>
-              {paymentSucceeded && (
-                <Typography variant="subtitle1">
-                  Your order number is {orderNumber}. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
-                </Typography>
-              )}
 
-              {!paymentSucceeded && (
-                <Button variant="contained" onClick={handleBack}>
-                  Go back and try again
+        {activeStep === steps.length ? (
+          <>
+            <Typography variant="h5" gutterBottom>
+              {paymentMessage}
+            </Typography>
+            {paymentSucceeded && (
+              <Typography variant="subtitle1">
+                Your order number is {orderNumber}. We have emailed your order
+                confirmation, and will send you an update when your order has
+                shipped.
+              </Typography>
+            )}
+
+            {!paymentSucceeded && (
+              <Button variant="contained" onClick={handleBack}>
+                Go back and try again
+              </Button>
+            )}
+          </>
+        ) : (
+          <form onSubmit={methods.handleSubmit(submitOrder)}>
+            <div style={activeStep !== 0 ? { display: "none" } : {}}>
+              <AddressForm />
+            </div>
+            <div style={activeStep !== 1 ? { display: "none" } : {}}>
+              <Review />
+            </div>
+            <div style={activeStep !== 2 ? { display: "none" } : {}}>
+              <PaymentForm
+                onCardInputChange={onCardInputChange}
+                cardState={cardState}
+              />
+            </div>
+
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              {activeStep !== 0 && (
+                <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                  Back
                 </Button>
               )}
-            </>
-          ) : (
-            <form onSubmit={methods.handleSubmit(handleNext)}>
-              {getStepContent(activeStep)}
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                {activeStep !== 0 && (
-                  <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                    Back
-                  </Button>
-                )}
+
+              {activeStep !== steps.length - 1 && (
+                <Button
+                  variant="contained"
+                  sx={{ mt: 3, ml: 1 }}
+                  disabled={!methods.formState.isValid}
+                  onClick={handleNext}
+                >
+                  Next
+                </Button>
+              )}
+
+              {activeStep === steps.length - 1 && (
                 <LoadingButton
                   loading={isLoading}
                   disabled={!methods.formState.isValid || !isValidPayment}
@@ -212,12 +212,12 @@ export default function CheckoutPage() {
                   type="submit"
                   sx={{ mt: 3, ml: 1 }}
                 >
-                  {activeStep === steps.length - 1 ? "Place order" : "Next"}
+                  Place order
                 </LoadingButton>
-              </Box>
-            </form>
-          )}
-        </>
+              )}
+            </Box>
+          </form>
+        )}
       </Paper>
     </FormProvider>
   );
