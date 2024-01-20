@@ -195,7 +195,9 @@ export default function CheckoutPage() {
               <Button
                 variant="contained"
                 sx={{ mt: 3, ml: 1 }}
-                disabled={!methods.formState.isValid}
+                disabled={
+                  !methods.formState.isValid || activeStep === steps.length
+                }
                 onClick={handleNext}
               >
                 Next
