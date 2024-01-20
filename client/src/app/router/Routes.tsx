@@ -19,6 +19,7 @@ const Login = lazy(() => import("../../features/account/Login"));
 const Register = lazy(() => import("../../features/account/Register"));
 const Orders = lazy(() => import("../../features/orders/Orders"));
 const OrderDetails = lazy(() => import("../../features/orders/OrderDetails"));
+const Confirmation = lazy(() => import("../../features/checkout/Confirmation"));
 const CheckoutContainer = lazy(
   () => import("../../features/checkout/CheckoutContainer")
 );
@@ -61,6 +62,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loading />}>
                 <OrderDetails />
+              </Suspense>
+            ),
+          },
+          {
+            path: "/order-confirmation",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Confirmation />
               </Suspense>
             ),
           },
