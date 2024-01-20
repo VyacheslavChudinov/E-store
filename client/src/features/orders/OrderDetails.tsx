@@ -22,7 +22,11 @@ export default function OrderDetails() {
   }, [dispatch, id, order]);
 
   if (!order) {
-    return <h1>Can't find the order.</h1>;
+    return (
+      <Typography variant="h3" display={"flex"} justifyContent={"center"}>
+        Can't find the order.
+      </Typography>
+    );
   }
 
   return (
