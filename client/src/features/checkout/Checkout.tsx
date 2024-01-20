@@ -25,12 +25,12 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { CardState, CardComplete, StripeInputEvent } from "./checkoutTypes";
+import { useNavigate } from "react-router-dom";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
-  const [orderNumber, setOrderNumber] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -43,6 +43,7 @@ export default function CheckoutPage() {
   const [paymentMessage, setPaymentMessage] = useState("");
   const [paymentSucceeded, setPaymentSucceeded] = useState(false);
   const { basket } = useAppSelector((state) => state.basket);
+  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -92,15 +93,16 @@ export default function CheckoutPage() {
       );
 
       if (paymentResults.paymentIntent?.status === "succeeded") {
-        const createOderdId = await agent.Orders.createOrder({
+        const orderId = await agent.Orders.createOrder({
           saveAddress,
           shippingAddress: shippingAddress as ShippingAddress,
         });
-        setOrderNumber(createOderdId);
         setPaymentSucceeded(true);
-        setPaymentMessage("Payment has been received.");
         setActiveStep((prev) => prev + 1);
         dispatch(clearBasket());
+        navigate("/order-confirmation", {
+          state: { orderId },
+        });
       } else {
         setPaymentSucceeded(false);
         setPaymentMessage(paymentResults.error?.message ?? "");
@@ -152,72 +154,67 @@ export default function CheckoutPage() {
           ))}
         </Stepper>
 
-        {activeStep === steps.length ? (
+        {activeStep === steps.length && !paymentSucceeded && (
           <>
             <Typography variant="h5" gutterBottom>
               {paymentMessage}
             </Typography>
-            {paymentSucceeded && (
-              <Typography variant="subtitle1">
-                Your order number is {orderNumber}. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
-              </Typography>
-            )}
 
-            {!paymentSucceeded && (
-              <Button variant="contained" onClick={handleBack}>
-                Go back and try again
+            <Button
+              variant="contained"
+              sx={{ mt: "20px" }}
+              onClick={handleBack}
+            >
+              Go back and try again
+            </Button>
+          </>
+        )}
+
+        <form onSubmit={methods.handleSubmit(submitOrder)}>
+          <div style={activeStep !== 0 ? { display: "none" } : {}}>
+            <AddressForm />
+          </div>
+          <div style={activeStep !== 1 ? { display: "none" } : {}}>
+            <Review />
+          </div>
+          <div style={activeStep !== 2 ? { display: "none" } : {}}>
+            <PaymentForm
+              onCardInputChange={onCardInputChange}
+              cardState={cardState}
+            />
+          </div>
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            {activeStep !== 0 && (
+              <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                Back
               </Button>
             )}
-          </>
-        ) : (
-          <form onSubmit={methods.handleSubmit(submitOrder)}>
-            <div style={activeStep !== 0 ? { display: "none" } : {}}>
-              <AddressForm />
-            </div>
-            <div style={activeStep !== 1 ? { display: "none" } : {}}>
-              <Review />
-            </div>
-            <div style={activeStep !== 2 ? { display: "none" } : {}}>
-              <PaymentForm
-                onCardInputChange={onCardInputChange}
-                cardState={cardState}
-              />
-            </div>
 
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              {activeStep !== 0 && (
-                <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                  Back
-                </Button>
-              )}
+            {activeStep !== steps.length - 1 && (
+              <Button
+                variant="contained"
+                sx={{ mt: 3, ml: 1 }}
+                disabled={!methods.formState.isValid}
+                onClick={handleNext}
+              >
+                Next
+              </Button>
+            )}
 
-              {activeStep !== steps.length - 1 && (
-                <Button
-                  variant="contained"
-                  sx={{ mt: 3, ml: 1 }}
-                  disabled={!methods.formState.isValid}
-                  onClick={handleNext}
-                >
-                  Next
-                </Button>
-              )}
-
-              {activeStep === steps.length - 1 && (
-                <LoadingButton
-                  loading={isLoading}
-                  disabled={!methods.formState.isValid || !isValidPayment}
-                  variant="contained"
-                  type="submit"
-                  sx={{ mt: 3, ml: 1 }}
-                >
-                  Place order
-                </LoadingButton>
-              )}
-            </Box>
-          </form>
-        )}
+            {activeStep === steps.length - 1 && (
+              <LoadingButton
+                loading={isLoading}
+                disabled={!methods.formState.isValid || !isValidPayment}
+                variant="contained"
+                type="submit"
+                sx={{ mt: 3, ml: 1 }}
+              >
+                Place order
+              </LoadingButton>
+            )}
+          </Box>
+        </form>
       </Paper>
     </FormProvider>
   );
