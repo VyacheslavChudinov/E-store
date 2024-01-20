@@ -1,4 +1,4 @@
-import { Typography, Grid, TextField } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import StoreFormTextInput from "../../app/components/StoreFormTextInput";
 import {
@@ -25,9 +25,6 @@ export default function PaymentForm({
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
-        Payment method
-      </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <StoreFormTextInput

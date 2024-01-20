@@ -1,4 +1,4 @@
-import { Typography, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import StoreFormTextInput from "../../app/components/StoreFormTextInput";
 import { useFormContext } from "react-hook-form";
 import StoreFormCheckbox from "../../app/components/StoreFormCheckbox";
@@ -8,10 +8,6 @@ export default function AddressForm() {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
-        Shipping address
-      </Typography>
-
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <StoreFormTextInput control={control} name="name" label="Name" />
