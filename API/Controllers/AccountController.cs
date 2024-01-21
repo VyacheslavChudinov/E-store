@@ -46,7 +46,7 @@ public class AccountController : BaseApiController
         {
             Email = user.Email,
             Token = await _tokenService.GenerateToken(user),
-            Basket = anonBasket is null ? userBasket?.MapTo<BasketDto>() : anonBasket?.MapTo<BasketDto>()
+            Basket = anonBasket is null ? userBasket?.MapToDto() : anonBasket?.MapToDto()
         };
     }
 
@@ -80,7 +80,7 @@ public class AccountController : BaseApiController
         {
             Email = user.Email,
             Token = await _tokenService.GenerateToken(user),
-            Basket = userBasket?.MapTo<BasketDto>()
+            Basket = userBasket?.MapToDto()
         };
     }
 }

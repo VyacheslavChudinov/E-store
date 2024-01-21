@@ -30,7 +30,7 @@ public class PaymentsController(StoreContext context, PaymentService paymentServ
 
         await basketService.SaveBasket();
 
-        return basket.MapTo<BasketDto>();
+        return basket.MapToDto();
     }
 
     [HttpPost("webhook")]

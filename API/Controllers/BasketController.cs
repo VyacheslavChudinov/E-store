@@ -30,7 +30,7 @@ public class BasketController : BaseApiController
             return NotFound();
         }
 
-        return basket?.MapTo<BasketDto>();
+        return basket?.MapToDto();
     }
 
     [HttpPost]
@@ -47,7 +47,7 @@ public class BasketController : BaseApiController
         var isSaved = await _context.SaveChangesAsync() > 0;
         if (!isSaved) return BadRequest(new ProblemDetails { Title = "Error saving item in basket" });
 
-        return CreatedAtRoute("GetBasket", basket?.MapTo<BasketDto>());
+        return CreatedAtRoute("GetBasket", basket?.MapToDto());
     }
 
     [HttpDelete]

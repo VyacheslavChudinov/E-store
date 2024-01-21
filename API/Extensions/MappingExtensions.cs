@@ -15,12 +15,12 @@ public static class MappingExtensions
         _mapper = mapper;
     }
 
-    public static BasketDto MapTo<BasketDto>(this Basket basket)
+    public static BasketDto MapToDto(this Basket basket)
     {
         return _mapper.Map<BasketDto>(basket);
     }
 
-    public static OrderDto MapTo<OrderDto>(this Order order)
+    public static OrderDto MapToDto(this Order order)
     {
         return _mapper.Map<OrderDto>(order);
     }
