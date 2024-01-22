@@ -23,7 +23,6 @@ interface Props {
 const contentLinks = [
   { title: "catalog", path: "/catalog" },
   { title: "about", path: "/about" },
-  { title: "contact", path: "/contact" },
   ...(import.meta.env.DEV ? [{ title: "errors", path: "/errors" }] : []),
 ];
 

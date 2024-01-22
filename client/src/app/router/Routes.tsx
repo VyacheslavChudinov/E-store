@@ -9,7 +9,6 @@ import RequireBasket from "./RequireBasket";
 const Basket = lazy(() => import("../../features/basket/Basket"));
 const Home = lazy(() => import("../../features/home/Home"));
 const Inventory = lazy(() => import("../../features/admin/Inventory"));
-const Contact = lazy(() => import("../../features/contact/Contact"));
 const About = lazy(() => import("../../features/about/About"));
 const Catalog = lazy(() => import("../../features/catalog/Catalog"));
 const Errors = lazy(() => import("../../features/errors/Errors"));
@@ -109,15 +108,6 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Loading />}>
             <Catalog />
-          </Suspense>
-        ),
-      },
-
-      {
-        path: "/contact",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Contact />
           </Suspense>
         ),
       },
