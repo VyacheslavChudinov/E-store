@@ -1,0 +1,1 @@
+import{j as t,$ as o,P as a,T as n,B as r,L as e}from"./index-0d088209.js";function i(){return t.jsxs(o,{component:a,sx:{height:400},children:[t.jsx(n,{variant:"h3",gutterBottom:!0,children:"Not found"}),t.jsx(r,{fullWidth:!0,component:e,to:"/catalog",children:"Go back to catalog"})]})}export{i as default};
