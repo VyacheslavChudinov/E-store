@@ -22,7 +22,7 @@ export default function Errors() {
   }
 
   return (
-    <Container>
+    <Container sx={{ mt: "50px" }}>
       <Typography gutterBottom variant="h2">
         Errors testing page
       </Typography>

@@ -87,7 +87,7 @@ export default function ProductDetails() {
   if (!product) return <NotFound />;
 
   return (
-    <Grid container spacing={6}>
+    <Grid container spacing={6} sx={{ mt: "50px" }}>
       <Grid item xs={6}>
         <img
           src={product.pictureUrl}

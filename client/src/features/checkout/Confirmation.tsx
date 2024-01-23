@@ -14,7 +14,7 @@ export default function ConfirmationPage() {
   }
 
   return (
-    <Box component={Paper} sx={{ p: "20px" }}>
+    <Box component={Paper} sx={{ p: "20px", mt: "50px" }}>
       <Typography variant="h5" gutterBottom>
         Payment has been received.
       </Typography>

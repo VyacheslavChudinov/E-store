@@ -30,39 +30,37 @@ export default function OrderDetails() {
   }
 
   return (
-    <>
-      <Grid container>
-        <Grid item xs={6}>
-          <Typography
-            variant="h6"
-            color={"GrayText"}
-          >{`Order #${order.id}. `}</Typography>
-          <Typography
-            variant="h6"
-            color={"GrayText"}
-          >{`Status: ${order.orderStatus}`}</Typography>
-        </Grid>
-        <Grid item xs={6} display={"flex"} justifyContent={"flex-end"}>
-          <Button
-            component={Link}
-            to={"/orders"}
-            variant="text"
-            sx={{ mb: "10px" }}
-          >
-            Back to orders
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <BasketTable
-            isBasket={false}
-            items={(order.orderItems as BasketItem[]) ?? []}
-          />
-        </Grid>
-        <Grid item xs={6}></Grid>
-        <Grid item xs={6}>
-          <BasketSummary items={(order.orderItems as BasketItem[]) ?? []} />
-        </Grid>
+    <Grid container sx={{ mt: "50px" }}>
+      <Grid item xs={6} sx={{mb: "20px"}}>
+        <Typography
+          variant="h6"
+          color={"GrayText"}
+        >{`Order #${order.id}. `}</Typography>
+        <Typography
+          variant="h6"
+          color={"GrayText"}
+        >{`Status: ${order.orderStatus}`}</Typography>
       </Grid>
-    </>
+      <Grid item xs={6} display={"flex"} justifyContent={"flex-end"}>
+        <Button
+          component={Link}
+          to={"/orders"}
+          variant="text"
+          sx={{ mb: "10px" }}
+        >
+          Back to orders
+        </Button>
+      </Grid>
+      <Grid item xs={12}>
+        <BasketTable
+          isBasket={false}
+          items={(order.orderItems as BasketItem[]) ?? []}
+        />
+      </Grid>
+      <Grid item xs={6}></Grid>
+      <Grid item xs={6}>
+        <BasketSummary items={(order.orderItems as BasketItem[]) ?? []} />
+      </Grid>
+    </Grid>
   );
 }

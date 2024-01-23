@@ -1,5 +1,5 @@
 import { Basket } from "../../app/models/basket";
-import { Button, Grid } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import BasketSummary from "./BasketSummary";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/store/configureStore";
@@ -9,7 +9,7 @@ export default function Basket() {
   const { basket, updatingProducts } = useAppSelector((state) => state.basket);
 
   return (
-    <>
+    <Box sx={{ mt: "50px" }}>
       <BasketTable isBasket={true} items={basket?.items ?? []} />
 
       <Grid container>
@@ -28,6 +28,6 @@ export default function Basket() {
           </Button>
         </Grid>
       </Grid>
-    </>
+    </Box>
   );
 }

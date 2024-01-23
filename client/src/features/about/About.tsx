@@ -4,11 +4,17 @@ export default function About() {
   const titleStyles = {
     display: "flex",
     justifyContent: "center",
-    sx: { mb: "50px", mt: "50px" },
+    sx: {
+      mb: "50px",
+      mt: "50px",
+      "&:first-child": {
+        mt: 0,
+      },
+    },
   };
 
   return (
-    <Box>
+    <Box sx={{ mt: "50px" }}>
       <Typography variant="h3" {...titleStyles}>
         Welcome to E-Store!
       </Typography>

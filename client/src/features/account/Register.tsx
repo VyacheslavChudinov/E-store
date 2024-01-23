@@ -47,7 +47,7 @@ export default function Register() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        p: "4",
+        mt: "50px",
       }}
     >
       <Box

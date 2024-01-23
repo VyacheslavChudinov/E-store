@@ -57,7 +57,7 @@ export default function Inventory() {
     return <ProductForm product={selectedProduct} onCancel={onEditCancel} />;
 
   return (
-    <>
+    <Box sx={{ mt: "50px" }}>
       <Box display="flex" justifyContent="space-between">
         <Typography sx={{ p: 2 }} variant="h4">
           Inventory
@@ -135,6 +135,6 @@ export default function Inventory() {
           />
         </Box>
       )}
-    </>
+    </Box>
   );
 }

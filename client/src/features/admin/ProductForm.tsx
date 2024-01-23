@@ -60,7 +60,7 @@ export default function ProductForm({ product, onCancel }: ProductFormProps) {
   }
 
   return (
-    <Box component={Paper} sx={{ p: 4 }}>
+    <Box component={Paper} sx={{ p: 4, mt: "50px" }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
         Product Details
       </Typography>

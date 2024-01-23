@@ -41,7 +41,7 @@ export default function Login() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        p: "4",
+        mt: "50px" 
       }}
     >
       <Box

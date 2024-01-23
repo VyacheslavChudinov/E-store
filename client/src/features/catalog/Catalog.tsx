@@ -43,7 +43,7 @@ export default function Catalog() {
   }
 
   return (
-    <Grid container spacing={4} sx={{ pb: 4 }}>
+    <Grid container spacing={4} sx={{ pb: 4, mt: "50px" }}>
       <Grid item xs={3}>
         <Paper sx={{ mb: 2 }}>
           <ProductSearch />
