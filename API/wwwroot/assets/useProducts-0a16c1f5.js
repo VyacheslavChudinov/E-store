@@ -1,0 +1,1 @@
+import{f as d,u as c,J as i,r as o,K as n,N as l}from"./index-52948472.js";function A(){const s=d(),a=c(i.selectAll),{productsLoaded:t,filtersLoaded:e,brands:r,types:p,paginationDetails:u}=c(f=>f.catalog);return o.useEffect(()=>{t||s(n())},[s,t]),o.useEffect(()=>{e||s(l())},[s,e]),{products:a,productsLoaded:t,filtersLoaded:e,brands:r,types:p,paginationDetails:u}}export{A as u};
