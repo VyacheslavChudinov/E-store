@@ -55,7 +55,7 @@ function App() {
         <CssBaseline></CssBaseline>
         <Header darkMode={darkMode} setDarkMode={setDarkMode}></Header>
 
-        <Container>
+        <Container sx={{ height: "calc(100% - 64px)" }}>
           <Outlet />
         </Container>
       </ThemeProvider>

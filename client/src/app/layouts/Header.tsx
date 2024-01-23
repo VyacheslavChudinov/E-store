@@ -52,8 +52,13 @@ export default function Header({ darkMode, setDarkMode }: Props) {
   }
 
   return (
-    <AppBar position="static" sx={{ mb: 4 }}>
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+    <AppBar position="sticky">
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <Box display={"flex"} alignItems={"center"}>
           <Typography
             variant="h6"
