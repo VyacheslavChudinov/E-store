@@ -17,7 +17,6 @@ public class PaymentService
         StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
         var paymentService = new PaymentIntentService();
 
-        var intent = new PaymentIntent();
 
         var subtotal = basket.Items.Sum(item => item.Product.Price * item.Quantity);
         var deliveryFee = subtotal < 10000 ? 500 : 0;
@@ -30,7 +29,7 @@ public class PaymentService
                 Currency = "usd",
                 PaymentMethodTypes = new List<string> { "card" }
             };
-            intent = await paymentService.CreateAsync(options);
+            return await paymentService.CreateAsync(options);
         }
         else
         {
@@ -38,9 +37,7 @@ public class PaymentService
             {
                 Amount = subtotal + deliveryFee
             };
-            intent = await paymentService.UpdateAsync(basket.PaymentIntentId, options);
+            return await paymentService.UpdateAsync(basket.PaymentIntentId, options);
         }
-
-        return intent;
     }
 }
