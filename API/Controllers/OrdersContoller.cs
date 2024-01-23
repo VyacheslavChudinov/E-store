@@ -57,13 +57,20 @@ public class OrdersController : BaseApiController
     [HttpPost]
     public async Task<ActionResult<int>> CreateOrder([FromBody] CreateOrderDto orderDto)
     {
-        var basket = await _basketService.RetrieveBasket(User.Identity.Name);
+        var buyerId = User.Identity?.Name ?? Request.Cookies[BasketService.BuyerIdCookieKey];
+        var basket = await _basketService.RetrieveBasket(buyerId);
         if (basket is null) return BadRequest(new ProblemDetails { Title = "Can't find basket" });
+        if (basket.Items is null || basket.Items.Count == 0)
+            return BadRequest(new ProblemDetails { Title = "There are no products in basket." });
 
         var orderItems = new List<OrderItem>();
         foreach (var basketItem in basket.Items)
         {
-            var product = await _context.Products.FindAsync(basketItem.Id);
+            var product = await _context.Products.FindAsync(basketItem.ProductId);
+
+            if (product is null)
+                return BadRequest(new ProblemDetails { Title = "Issue finding basket product in catalog." });
+
             orderItems.Add(new OrderItem
             {
                 Price = product.Price,
@@ -84,7 +91,7 @@ public class OrdersController : BaseApiController
 
         var order = new Order
         {
-            BuyerId = User.Identity.Name,
+            BuyerId = buyerId,
             OrderItems = orderItems,
             ShippingAddress = orderDto.ShippingAddress,
             Subtotal = orderItems.Sum(item => item.Price * item.Quantity),
