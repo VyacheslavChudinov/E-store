@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import Slider from "react-slick";
 import ProductCard from "../catalog/ProductCard";
 import Loading from "../../app/layouts/Loading";
@@ -9,14 +9,16 @@ import SliderArrowWrapper from "../../app/components/SliderArrowWrapper";
 export default function Home() {
   const { products, productsLoaded } = useProducts();
 
-  const settings = {
+  const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
+    slidesToShow: 3,
+    slidesToScroll: 3,
     autoplay: true,
     autoplaySpeed: 5000,
+    centerMode: true,
+    centerPadding: "0px",
     prevArrow: (
       <SliderArrowWrapper>
         <ArrowCircleLeft
@@ -42,21 +44,20 @@ export default function Home() {
   }
 
   return (
-    <>
-      <Typography textAlign={"center"} variant="h2" sx={{ mb: "20px" }}>
-        Our products:
-      </Typography>
-      <Box sx={{ m: "auto", width: "500px" }}>
-        <Slider {...settings}>
-          {products.map((product) => {
-            return (
-              <Box p={"20px"} key={product.id}>
-                <ProductCard product={product} />
-              </Box>
-            );
-          })}
-        </Slider>
-      </Box>
-    </>
+    <Box
+      position={"relative"}
+      top={"50%"}
+      sx={{ transform: "translate(0, -50%)" }}
+    >
+      <Slider {...sliderSettings}>
+        {products.map((product) => {
+          return (
+            <Box key={product.id} sx={{ p: "0 25px" }}>
+              <ProductCard product={product} />
+            </Box>
+          );
+        })}
+      </Slider>
+    </Box>
   );
 }
