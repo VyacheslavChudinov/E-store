@@ -58,7 +58,7 @@ const createSliceWithThunk = buildCreateSlice({
 });
 
 function initParams() {
-  return { orderBy: "name", pageNumber: 1, pageSize: 9, brands: [], types: [] };
+  return { orderBy: "name", pageNumber: 1, pageSize: 6, brands: [], types: [] };
 }
 
 export const catalogSlice = createSliceWithThunk({
